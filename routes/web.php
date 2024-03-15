@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,10 +17,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+\Illuminate\Support\Facades\Auth::loginUsingId(1);
+dd(\Illuminate\Support\Facades\Auth::check());
+
 Route::get('/', [LandingPageController::class, 'landingPage']);
 
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])
     ->middleware(['auth'])
     ->name('dashboard');
+
+Route::resource('users', UserController::class)->middleware('admin');
+
+Route::controller(ProjectController::class)->group(function () {
+    Route::prefix('projects')->group(function () {
+        Route::get('', 'index')->name('projects.index');
+        Route::get('create', 'create')->name('projects.create');
+        Route::post('', 'store')->name('projects.store');
+        Route::get('{project}', 'show')->name('projects.show');
+        Route::get('{project}/edit', 'edit')->name('projects.edit');
+        Route::put('{project}', 'update')->name('projects.update');
+        Route::delete('{project}', 'delete')->name('projects.delete');
+    });
+});
 
 require __DIR__ . '/auth.php';
