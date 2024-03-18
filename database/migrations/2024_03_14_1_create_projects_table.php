@@ -22,7 +22,7 @@ class CreateProjectsTable extends Migration
             $table->text('description')->nullable();
             $table->dateTime('start_date')->nullable();
             $table->dateTime('end_date')->nullable();
-            $table->float('type')->nullable();
+            $table->string('type')->nullable();
             $table->timestamps();
         });
     }

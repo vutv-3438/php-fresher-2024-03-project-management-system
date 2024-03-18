@@ -22,7 +22,6 @@ class ChangeUsersTable extends Migration
             $table->string('phone_number')->unique();
             $table->tinyInteger('is_active')->default(true);
             $table->tinyInteger('is_admin')->default(false);
-            $table->text('password')->change();
         });
     }
 
@@ -34,7 +33,7 @@ class ChangeUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('name')->change();
+            $table->string('name');
             $table->dropColumn('first_name');
             $table->dropColumn('last_name');
             $table->dropColumn('user_name');
@@ -42,7 +41,6 @@ class ChangeUsersTable extends Migration
             $table->dropColumn('phone_number');
             $table->dropColumn('is_active');
             $table->dropColumn('is_admin');
-            $table->string('password')->change();
         });
     }
 }
