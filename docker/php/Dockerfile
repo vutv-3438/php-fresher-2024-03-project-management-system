@@ -4,14 +4,16 @@ FROM php:7.4-fpm
 WORKDIR /var/www
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get clean && apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
     zip \
-    unzip
+    unzip \
+    npm \
+    nano
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -20,5 +22,9 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 # Composer set up
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN rm -rf /usr/local/bin/composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php --version=1.10.13 --install-dir=/usr/local/bin --filename=composer
+RUN php -r "unlink('composer-setup.php');"
+ENV COMPOSER_VERSION=1.10.13
 ENV COMPOSER_ALLOW_SUPERUSER=1
