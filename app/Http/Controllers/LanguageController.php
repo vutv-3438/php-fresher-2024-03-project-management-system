@@ -3,14 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Session;
 
 class LanguageController extends Controller
 {
-    public function changeLanguage(Request $request, $language)
-    {
-        Session::put('lang', $language);
+    private const ACCEPTED_LANGUAGES = [
+        'vi',
+        'en'
+    ];
 
+    private const LANG_KEY = 'lang';
+
+    public function changeLanguage(Request $request, string $lang)
+    {
+        if (!in_array($lang, static::ACCEPTED_LANGUAGES)) {
+            abort(400);
+            return;
+        }
+
+        session()->put(static::LANG_KEY, $lang);
         return redirect()->back();
     }
 }

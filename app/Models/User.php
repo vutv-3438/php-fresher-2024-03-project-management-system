@@ -17,6 +17,9 @@ class User extends Authenticatable
     use HasFactory;
     use Notifiable;
 
+    private const IS_ACTIVE = 1;
+    private const IS_ADMIN = 1;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -83,12 +86,12 @@ class User extends Authenticatable
     /**
      * Scope a query to only admin users.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeAdmin($query)
     {
-        return $query->where('is_admin', true)->get();
+        return $query->where('is_admin', static::IS_ADMIN)->get();
     }
 
     /**
@@ -99,7 +102,7 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::addGlobalScope('ancient', function (Builder $builder) {
-            $builder->where('is_active', 1);
+            $builder->where('is_active', static::IS_ACTIVE);
         });
     }
 }

@@ -1,9 +1,5 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LandingPageController;
-use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,15 +13,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [LandingPageController::class, 'landingPage']);
+Route::get('/', [\App\Http\Controllers\LandingPageController::class, 'landingPage']);
 
-Route::get('/dashboard', [DashboardController::class, 'dashboard'])
+Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'dashboard'])
     ->middleware(['auth'])
     ->name('dashboard');
 
-Route::resource('users', UserController::class)->middleware('admin');
+Route::resource('users', \App\Http\Controllers\UserController::class)->middleware('admin');
 
-Route::controller(ProjectController::class)->group(function () {
+Route::controller(\App\Http\Controllers\ProjectController::class)->group(function () {
     Route::prefix('projects')->group(function () {
         Route::get('', 'index')->name('projects.index');
         Route::get('create', 'create')->name('projects.create');
@@ -33,8 +29,11 @@ Route::controller(ProjectController::class)->group(function () {
         Route::get('{project}', 'show')->name('projects.show');
         Route::get('{project}/edit', 'edit')->name('projects.edit');
         Route::put('{project}', 'update')->name('projects.update');
-        Route::delete('{project}', 'delete')->name('projects.delete');
+        Route::delete('{project}', 'destroy')->name('projects.destroy');
     });
 });
+
+Route::get('language/{lang}', [\App\Http\Controllers\LanguageController::class, 'changeLanguage'])
+    ->name('language.change');
 
 require __DIR__ . '/auth.php';
