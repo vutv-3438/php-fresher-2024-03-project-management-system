@@ -6,6 +6,7 @@ use DragonCode\Support\Facades\Helpers\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -16,6 +17,9 @@ class User extends Authenticatable
     use HasApiTokens;
     use HasFactory;
     use Notifiable;
+
+    private const IS_ACTIVE = 1;
+    private const IS_ADMIN = 1;
 
     /**
      * The attributes that are mass assignable.
@@ -70,6 +74,11 @@ class User extends Authenticatable
         return $this->hasMany(UserRole::class);
     }
 
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, UserRole::class);
+    }
+
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
@@ -83,12 +92,12 @@ class User extends Authenticatable
     /**
      * Scope a query to only admin users.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeAdmin($query)
     {
-        return $query->where('is_admin', true)->get();
+        return $query->where('is_admin', self::IS_ADMIN);
     }
 
     /**
@@ -99,7 +108,7 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::addGlobalScope('ancient', function (Builder $builder) {
-            $builder->where('is_active', 1);
+            $builder->where('is_active', self::IS_ACTIVE);
         });
     }
 }
