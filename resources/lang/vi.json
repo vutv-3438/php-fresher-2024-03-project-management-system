@@ -62,7 +62,11 @@
     "You're logged in!": "Bạn đã đăng nhập!",
     "Edit": "Chỉnh sửa",
     "Delete": "Xóa",
-    "The :object has been deleted!": ":object đã được xóa!",
-    "User": "Người dùng",
-    "Something went wrong": "Có lỗi xảy ra, vui lòng thử lại sau!"
+    "The :object has been deleted": ":object đã được xóa!",
+    "The :object has been created": ":object đã được tạo!",
+    "The :object has been updated": ":object đã được cập nhật!",
+    "user": "Người dùng",
+    "Something went wrong": "Có lỗi xảy ra, vui lòng thử lại sau!",
+    "The :attribute must be greater equal than current date": "Ngày :attribute lớn hơn hoặc bằng ngày hiện tại",
+    "The start date must be greater equal than end date": "Ngày bắt đầu phải lớn hơn hoặc bằng ngày kết thúc"
 }

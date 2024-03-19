@@ -26,10 +26,10 @@ Route::controller(\App\Http\Controllers\ProjectController::class)->group(functio
         Route::get('', 'index')->name('projects.index');
         Route::get('create', 'create')->name('projects.create');
         Route::post('', 'store')->name('projects.store');
-        Route::get('{project}', 'show')->name('projects.show');
-        Route::get('{project}/edit', 'edit')->name('projects.edit');
-        Route::put('{project}', 'update')->name('projects.update');
-        Route::delete('{project}', 'destroy')->name('projects.destroy');
+        Route::get('{id}', 'show')->name('projects.show');
+        Route::get('{id}/edit', 'edit')->name('projects.edit');
+        Route::put('{id}', 'update')->name('projects.update');
+        Route::delete('{id}', 'destroy')->name('projects.destroy');
     });
 });
 

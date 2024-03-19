@@ -6,6 +6,7 @@ use DragonCode\Support\Facades\Helpers\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -73,6 +74,11 @@ class User extends Authenticatable
         return $this->hasMany(UserRole::class);
     }
 
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, UserRole::class);
+    }
+
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
@@ -91,7 +97,7 @@ class User extends Authenticatable
      */
     public function scopeAdmin($query)
     {
-        return $query->where('is_admin', static::IS_ADMIN)->get();
+        return $query->where('is_admin', self::IS_ADMIN);
     }
 
     /**
@@ -102,7 +108,7 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::addGlobalScope('ancient', function (Builder $builder) {
-            $builder->where('is_active', static::IS_ACTIVE);
+            $builder->where('is_active', self::IS_ACTIVE);
         });
     }
 }

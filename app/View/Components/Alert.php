@@ -17,9 +17,7 @@ class Alert extends Component
      *
      * @return void
      */
-    public function __construct(
-        string $type,
-        string $message)
+    public function __construct(string $type, string $message)
     {
         $this->type = $type;
         $this->message = $message;

@@ -8,19 +8,19 @@ class LanguageController extends Controller
 {
     private const ACCEPTED_LANGUAGES = [
         'vi',
-        'en'
+        'en',
     ];
 
     private const LANG_KEY = 'lang';
 
     public function changeLanguage(Request $request, string $lang)
     {
-        if (!in_array($lang, static::ACCEPTED_LANGUAGES)) {
-            abort(400);
-            return;
+        if (in_array($lang, self::ACCEPTED_LANGUAGES)) {
+            session()->put(self::LANG_KEY, $lang);
+
+            return back();
         }
 
-        session()->put(static::LANG_KEY, $lang);
-        return redirect()->back();
+        abort(400);
     }
 }

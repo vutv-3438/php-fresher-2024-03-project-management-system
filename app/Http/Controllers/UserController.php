@@ -2,29 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
     public function index()
     {
         return view('users.index', [
-            'users' => User::all()
+            'users' => User::all()->load('roles'),
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
     public function create()
     {
@@ -34,35 +35,39 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param StoreUserRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $request->validate([
-            'user_name' => ['required', 'string', 'max:255'],
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Password::defaults()],
-        ]);
+        try {
+            User::create([
+                'user_name' => $request->user_name,
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-        $user = User::create([
-            'user_name' => $request->user_name,
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+            return redirect()->route('users.index')->with([
+                'type' => 'success',
+                'msg' => __('The :object has been created', ['object' => 'user']),
+            ]);
+        } catch (\Exception $e) {
+            return back()->with([
+                'type' => 'danger',
+                'msg' => __('Something went wrong'),
+            ]);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param User $user
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
         //
     }
@@ -70,44 +75,65 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return View
      */
     public function edit(User $user)
     {
-        //
+        return view('users.edit', [
+            'user' => $user,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateUserRequest $request
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        try {
+            $user->user_name = $request->user_name;
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
+            $user->email = $request->email;
+            $user->password = empty($request->password) ? $user->password : Hash::make($request->password);
+            $user->phone_number = $request->phone_number;
+            $user->save();
+
+            return redirect()->route('users.index')->with([
+                'type' => 'success',
+                'msg' => __('The :object has been updated', ['object' => 'user']),
+            ]);
+        } catch (\Exception $e) {
+            return back()->with([
+                'type' => 'danger',
+                'msg' => __('Something went wrong'),
+            ]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(User $user)
     {
         try {
             $user->delete();
-            return redirect()->back()->with([
+
+            return back()->with([
                 'type' => 'success',
-                'msg' => __('The :object has been deleted!', ['object' => 'user'])
+                'msg' => __('The :object has been deleted', ['object' => 'user']),
             ]);
         } catch (\Exception $e) {
-            return redirect()->back()->with([
+            return back()->with([
                 'type' => 'danger',
-                'msg' => __('Something went wrong')
+                'msg' => __('Something went wrong'),
             ]);
         }
     }
