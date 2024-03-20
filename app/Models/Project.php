@@ -10,6 +10,16 @@ class Project extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'start_date' => 'string',
+        'end_date' => 'string',
+    ];
+
     public function issues(): HasMany
     {
         return $this->hasMany(Issue::class);
