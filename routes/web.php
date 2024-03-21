@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\IssueController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\ProjectController;
@@ -27,6 +28,8 @@ Route::get('/dashboard', [DashboardController::class, 'dashboard'])
 Route::resource('users', UserController::class)
     ->middleware('admin')
     ->except(['show']);
+
+Route::resource('issues', IssueController::class);
 
 Route::controller(ProjectController::class)->group(function () {
     Route::prefix('projects')->group(function () {

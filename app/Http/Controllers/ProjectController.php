@@ -17,9 +17,11 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return view('projects.index', [
-            'projects' => Project::all()->load('roles.users'),
-        ]);
+        $projects = Project::whereHas('roles.users', function ($query) {
+            $query->where('users.id', auth()->user()->id);
+        })->get();
+
+        return view('projects.index', ['projects' => $projects]);
     }
 
     /**
@@ -47,7 +49,6 @@ class ProjectController extends Controller
                 'description' => $request->description,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
-                'type' => $request->type,
             ]);
 
             return redirect()->route('projects.index')->with([
@@ -101,7 +102,6 @@ class ProjectController extends Controller
                 'description' => $request->description,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
-                'type' => $request->type,
             ]);
 
             return redirect()->route('projects.index')->with([
