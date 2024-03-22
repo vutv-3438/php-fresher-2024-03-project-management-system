@@ -59,7 +59,7 @@
                     @foreach($users as $index => $user)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="primary text-sm text-gray-900 text-center">{{$index}}</div>
+                                <div class="primary text-sm text-gray-900 text-center">{{++$index}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div

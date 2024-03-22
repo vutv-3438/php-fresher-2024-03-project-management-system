@@ -55,7 +55,7 @@
                     @foreach($projects as $index => $project)
                         <tr>
                             <td class="border px-6 py-4 whitespace-nowrap">
-                                <div class="primary text-sm text-gray-900 text-center">{{$index}}</div>
+                                <div class="primary text-sm text-gray-900 text-center">{{++$index}}</div>
                             </td>
                             <td class="border px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900 text-center">{{$project->name}}</div>
@@ -71,6 +71,10 @@
                                           onclick="window.location='{{ route('projects.edit', ['id'=> $project->id]) }}'">
                                     {{ __('Edit') }}
                                 </x-button>
+                                <x-button class="mr-2 mb-2"
+                                          onclick="window.location='{{ route('issues.index', ['projectId' => $project->id]) }}'">
+                                    {{ __('View') }}
+                                </x-button>
                                 <form method="POST"
                                       action="{{ route('projects.destroy', ['id' => $project->id]) }}">
                                     @csrf
@@ -84,6 +88,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                {{ $projects->links() }}
             </div>
 
         </div>

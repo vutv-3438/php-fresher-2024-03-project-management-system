@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Issue;
+use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -10,16 +11,19 @@ class IssueController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
+     * @param int $projectId
      * @return View
      */
-    public function index()
+    public function index(int $projectId)
     {
         $issues = Issue::whereHas('assignee', function ($query) {
             $query->where('assignee_id', auth()->user()->id);
-        })->get();
+        })->where('project_id', $projectId)->get();
 
-        return view('issues.index', ['issues' => $issues]);
+        return view('issues.index', [
+            'project' => Project::find($projectId)->firstOrFail(),
+            'issues' => $issues
+        ]);
     }
 
     /**
