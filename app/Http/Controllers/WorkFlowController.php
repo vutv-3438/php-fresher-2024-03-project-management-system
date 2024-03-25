@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Common\Enums\Action;
 use App\Common\Enums\Resource;
+use App\Common\Enums\Status;
 use App\Http\Requests\StoreWorkFlowRequest;
 use App\Models\WorkFlow;
 use App\Services\Repositories\Contracts\IProjectRepository;
@@ -18,8 +19,10 @@ class WorkFlowController extends BaseController
     private IWorkFlowRepository $flowRepository;
     private IProjectRepository $projectRepository;
 
-    public function __construct(IWorkFlowRepository $flowRepository, IProjectRepository $projectRepository)
-    {
+    public function __construct(
+        IWorkFlowRepository $flowRepository,
+        IProjectRepository $projectRepository
+    ) {
         $this->flowRepository = $flowRepository;
         $this->projectRepository = $projectRepository;
     }
@@ -31,7 +34,7 @@ class WorkFlowController extends BaseController
      */
     public function index(int $projectId): View
     {
-        return view('workflows.index', [
+        return view('workFlows.index', [
             'workFlows' => $this->flowRepository->getWorkFlowByProjectId($projectId),
             'project' => $this->projectRepository->find($projectId),
         ]);
@@ -44,7 +47,7 @@ class WorkFlowController extends BaseController
      */
     public function create(): View
     {
-        return view('workflows.create');
+        return view('workFlows.create');
     }
 
     /**
@@ -58,7 +61,8 @@ class WorkFlowController extends BaseController
         try {
             $this->flowRepository->create($request->input());
 
-            return redirectWithSuccessAction(
+            return redirectWithActionStatus(
+                Status::SUCCESS,
                 'workFlows.index',
                 Resource::WORK_FLOW,
                 Action::CREATE,
@@ -67,19 +71,8 @@ class WorkFlowController extends BaseController
         } catch (\Exception $e) {
             Log::error($e->getMessage());
 
-            return backWithCommonError();
+            return backWithActionStatus();
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(int $id)
-    {
-        //
     }
 
     /**
@@ -87,11 +80,13 @@ class WorkFlowController extends BaseController
      *
      * @param WorkFlow $workFlow
      * @param int $projectId
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function edit(WorkFlow $workFlow, int $projectId)
+    public function edit(int $projectId, WorkFlow $workFlow): View
     {
-        //
+        return view('workFlows.edit', [
+            'workFlow' => $workFlow->load('workFlowSteps'),
+        ]);
     }
 
     /**
@@ -118,7 +113,8 @@ class WorkFlowController extends BaseController
         try {
             $this->flowRepository->delete($workFlow);
 
-            return redirectWithSuccessAction(
+            return redirectWithActionStatus(
+                Status::SUCCESS,
                 'workFlows.index',
                 Resource::WORK_FLOW,
                 Action::DELETE,
@@ -127,7 +123,7 @@ class WorkFlowController extends BaseController
         } catch (\Exception $e) {
             Log::error($e->getMessage());
 
-            return backWithCommonError();
+            return backWithActionStatus();
         }
     }
 }

@@ -1,10 +1,10 @@
 @if(isset($project))
-    <aside class="py-12 pl-8 pr-4 sm:pl-6 lg:pl-8 col-md-3 bg-light">
+    <aside class="py-12 pl-8 pr-4 sm:pl-6 lg:pl-8 col-md-3 bg-light border me-3">
         <div class="h-screen px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a href="#"
-                       class="nav-link py-2 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                       class="nav-link py-3 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group d-flex">
                         <svg
                             width="22"
                             height="22"
@@ -15,13 +15,13 @@
                                 d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
                             <path
                                 d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
-                            <span class="ms-1">Dashboard</span>
+                            <span class="ms-3">Dashboard</span>
                         </svg>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{route('issues.index', ['projectId' => $project->id])}}"
-                       class="nav-link py-2 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                       class="nav-link py-3 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group d-flex">
                         <svg width="22" height="22" viewBox="0 0 24 24" role="presentation">
                             <g fill="currentColor" fill-rule="evenodd">
                                 <path
@@ -31,12 +31,12 @@
                                     d="M10.674 11.331c.36.36.941.36 1.3 0l2.758-2.763a.92.92 0 00-1.301-1.298l-2.108 2.11-.755-.754a.92.92 0 00-1.3 1.3l1.406 1.405z"></path>
                             </g>
                         </svg>
-                        <span class="ms-1">Issues</span>
+                        <span class="ms-3">Issues</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{route('workFlows.index', ['projectId' => $project->id])}}"
-                       class="nav-link py-2 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                       class="nav-link py-3 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group d-flex">
                         <svg width="22" height="22" viewBox="0 0 24 24" role="presentation">
                             <g fill="currentColor">
                                 <path
@@ -48,22 +48,29 @@
                                     d="M5 5v2h12V5H5zm-2-.002C3 3.894 3.895 3 4.994 3h12.012C18.107 3 19 3.898 19 4.998V9H3V4.998z"></path>
                             </g>
                         </svg>
-                        <span class="ms-1">{{__('Workflows')}}</span>
+                        <span class="ms-3">{{__('Workflows')}}</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{route('roles.index', ['projectId' => $project->id])}}"
-                       class="nav-link py-2 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                       class="nav-link py-3 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group d-flex">
                         <svg width="22" height="22" viewBox="0 0 576 512">
                             <path
-                                d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"/>
+                                d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3
+                                7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288
+                                480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7
+                                0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144
+                                144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1
+                                0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7
+                                51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2
+                                6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"/>
                         </svg>
-                        <span class="ms-1">Roles</span>
+                        <span class="ms-3">Roles</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{route('issueTypes.index', ['projectId' => $project->id])}}"
-                       class="nav-link py-2 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                       class="nav-link py-3 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group d-flex">
                         <svg width="22" height="22" viewBox="0 0 576 512">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                                 <path
@@ -73,20 +80,23 @@
                                         40zM128 512a128 128 0 1 0 0-256 128 128 0 1 0 0 256z"/>
                             </svg>
                         </svg>
-                        <span class="ms-1">Issue types</span>
+                        <span class="ms-3">Issue types</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{route('logTimes.index', ['projectId' => $project->id])}}"
-                       class="nav-link py-2 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                       class="nav-link py-3 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group d-flex">
                         <svg
-                            width="22"
-                            height="22"
+                            width="20"
+                            height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                             <path
-                                d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/>
+                                d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256
+                                256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120V256c0 8 4 15.5 10.7
+                                20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24
+                                10.7-24 24z"/>
                         </svg>
-                        <span class="ms-1">Spent time</span>
+                        <span class="ms-3">Spent time</span>
                     </a>
                 </li>
             </ul>

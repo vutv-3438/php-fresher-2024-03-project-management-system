@@ -1,9 +1,9 @@
 @if(isset($project))
     <x-app-layout>
         <x-slot name="header">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('crud.update', ['object' => 'project']) }}
-            </h2>
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="font-weight-bold text-dark mb-0 fs-4 py-2">{{ __('crud.list', ['object' => 'Project']) }}</h2>
+            </div>
         </x-slot>
 
         <div class="py-12">

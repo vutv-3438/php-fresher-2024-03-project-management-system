@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Common\Enums\Action;
 use App\Common\Enums\Resource;
+use App\Common\Enums\Status;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
@@ -63,7 +64,8 @@ class ProjectController extends BaseController
                 $this->roleRepository->createManagerRoleInProject($project->id);
             });
 
-            return redirectWithSuccessAction(
+            return redirectWithActionStatus(
+                Status::SUCCESS,
                 'projects.index',
                 Resource::PROJECT,
                 Action::CREATE,
@@ -71,7 +73,7 @@ class ProjectController extends BaseController
         } catch (\Exception $e) {
             Log::error($e->getMessage());
 
-            return backWithCommonError();
+            return backWithActionStatus();
         }
     }
 
@@ -105,7 +107,8 @@ class ProjectController extends BaseController
         try {
             $this->projectRepository->update($request->input(), $id);
 
-            return redirectWithSuccessAction(
+            return redirectWithActionStatus(
+                Status::SUCCESS,
                 'projects.index',
                 Resource::PROJECT,
                 Action::UPDATE,
@@ -113,7 +116,7 @@ class ProjectController extends BaseController
         } catch (\Exception $e) {
             Log::error($e->getMessage());
 
-            return backWithCommonError();
+            return backWithActionStatus();
         }
     }
 
@@ -128,7 +131,8 @@ class ProjectController extends BaseController
         try {
             $this->projectRepository->delete($id);
 
-            return redirectWithSuccessAction(
+            return redirectWithActionStatus(
+                Status::SUCCESS,
                 'projects.index',
                 Resource::PROJECT,
                 Action::DELETE,
@@ -136,7 +140,7 @@ class ProjectController extends BaseController
         } catch (\Exception $e) {
             Log::error($e->getMessage());
 
-            return backWithCommonError();
+            return backWithActionStatus();
         }
     }
 }

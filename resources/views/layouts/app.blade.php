@@ -14,33 +14,30 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset(mix('css/app.css')) }}" rel="stylesheet">
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset(mix('js/app.js')) }}" defer></script>
 </head>
 <body class="font-sans antialiased">
 <div class="min-h-screen bg-gray-100">
-    @if(isset($navigation))
-        {{$navigation}}
-    @else
-        @include('layouts.navigation')
-    @endif
+    @include('layouts.navigation')
 
     <!-- Page Heading -->
-    <header class="bg-white shadow">
-        <div class="container">
-            {{ $header }}
-        </div>
-    </header>
+    @if(isset($header))
+        <header class="bg-white shadow">
+            <div class="container">
+                {{ $header }}
+            </div>
+        </header>
+    @endif
 
     <!-- Page Content -->
-    <main class="{{$class}}">
+    <main class="{{$class}} container mt-5">
         {{ $slot }}
     </main>
 
-    @stack('scripts')
 </div>
+@stack('scripts')
 </body>
 </html>

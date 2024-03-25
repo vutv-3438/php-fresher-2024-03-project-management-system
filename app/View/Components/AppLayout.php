@@ -7,19 +7,15 @@ use Illuminate\View\Component;
 class AppLayout extends Component
 {
     public string $class;
-    public string $extendedClass;
-    public bool $isHeaderWidthFull;
 
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($class = '', $extendedClass = '', $isHeaderWidthFull = false)
+    public function __construct($class = '')
     {
         $this->class = $class;
-        $this->extendedClass = $extendedClass;
-        $this->isHeaderWidthFull = $isHeaderWidthFull;
     }
 
     /**

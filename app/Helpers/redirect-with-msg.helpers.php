@@ -1,49 +1,50 @@
 <?php
 
-if (!function_exists('redirectWithSuccess')) {
-    function redirectWithSuccess(string $route, string $message, $params = []): \Illuminate\Http\RedirectResponse
+use Illuminate\Http\RedirectResponse;
+use App\Common\Enums\Status;
+
+if (!function_exists('getActionSuffix')) {
+    function getActionSuffix(string $action): string
     {
-        return redirect()->route($route, $params)->with([
-            'type' => 'success',
-            'msg' => $message,
-        ]);
+        return str_ends_with($action, 'e') ? 'd' : 'ed';
     }
 }
 
-if (!function_exists('redirectWithSuccessAction')) {
-    function getSuffixMsg(string $action): string
-    {
-        return substr($action, -1) == 'e' ? 'd' : 'ed';
-    }
-
-    function redirectWithSuccessAction(
+if (!function_exists('redirectWithActionStatus')) {
+    function redirectWithActionStatus(
+        string $status,
         string $route,
         string $object,
         string $action,
-               $params = []
-    ): \Illuminate\Http\RedirectResponse
+        array  $params = []
+    ): RedirectResponse
     {
-        return redirectWithSuccess($route, __("The :object has been $action" . getSuffixMsg($action), ['object' => $object]), $params);
-    }
-}
+        $message = __("The :object has been $action" . getActionSuffix($action), ['object' => $object]);
 
-if (!function_exists('redirectWithError')) {
-    function redirectWithError($route, $message, $params = []): \Illuminate\Http\RedirectResponse
-    {
         return redirect()->route($route, $params)->with([
-            'type' => 'error',
+            'type' => in_array($status, Status::toArray()) ? $status : Status::SUCCESS,
             'msg' => $message,
         ]);
     }
 }
 
-
-if (!function_exists('backWithCommonError')) {
-    function backWithCommonError($params = []): \Illuminate\Http\RedirectResponse
+if (!function_exists('backWithActionStatus')) {
+    /**
+     * The common error will be show if you don't pass any params
+     *
+     * @param string|null $object
+     * @param string|null $action
+     * @param string|null $status
+     * @return RedirectResponse
+     */
+    function backWithActionStatus(string $object = null, string $action = null, string $status = null): RedirectResponse
     {
+        $message = $status ? __('Something went wrong') : __("The :object has been $action" . getActionSuffix($action), ['object' => $object]);
+        $type = in_array($status, Status::toArray()) ? $status : Status::DANGER;
+
         return back()->with([
-            'type' => 'danger',
-            'msg' => __('Something went wrong'),
+            'type' => $type,
+            'msg' => $message,
         ]);
     }
 }

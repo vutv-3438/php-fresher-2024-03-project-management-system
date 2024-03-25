@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
+    private $webRouteFiles = [
+        'main',
+        'project',
+        'work-flow',
+        'work-flow-step',
+        'issue',
+        'role',
+        'issue-type',
+        'log-time'
+    ];
+
     /**
      * The path to the "home" route for your application.
      *
@@ -45,31 +56,12 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('web')
                 ->namespace($this->namespace)
-                ->group(base_path('routes/web/main.php'));
-
-            Route::middleware('web')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/web/project.php'));
-
-            Route::middleware('web')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/web/workflow.php'));
-
-            Route::middleware('web')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/web/issue.php'));
-
-            Route::middleware('web')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/web/role.php'));
-
-            Route::middleware('web')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/web/issue-type.php'));
-
-            Route::middleware('web')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/web/log-time.php'));
+                ->group(function () {
+                    foreach ($this->webRouteFiles as $file) {
+                        $routePath = base_path("routes/web/{$file}.php");
+                        Route::group([], $routePath);
+                    }
+                });
         });
     }
 

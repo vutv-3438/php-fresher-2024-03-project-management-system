@@ -1,7 +1,7 @@
 <x-app-layout :class="'d-flex justify-content-center'">
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
-            <h2 class="font-weight-bold text-dark mb-0">{{ __('crud.list', ['object' => 'Project']) }}</h2>
+            <h2 class="font-weight-bold text-dark mb-0 fs-4 py-2">{{ __('crud.list', ['object' => 'Project']) }}</h2>
         </div>
     </x-slot>
 
