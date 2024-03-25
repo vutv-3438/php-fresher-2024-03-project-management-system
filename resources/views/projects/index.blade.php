@@ -1,20 +1,20 @@
-<x-app-layout :class="'flex justify-center'">
+<x-app-layout :class="'d-flex justify-content-center'">
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('crud.list', ['object' => 'Project']) }}
-        </h2>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="font-weight-bold text-dark mb-0">{{ __('crud.list', ['object' => 'Project']) }}</h2>
+        </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
+        <div class="container">
+            <div class="card">
+                <div class="card-body">
                     {{ __('crud.list', ['object' => 'Project']) }}
                 </div>
             </div>
 
             <div class="mt-4 mb-4">
-                <x-button onclick="window.location='{{ route('projects.create') }}'">
+                <x-button onclick="window.location='{{ route('projects.create') }}'" class="btn btn-primary">
                     {{ __('crud.create', ['object' => 'project']) }}
                 </x-button>
             </div>
@@ -25,53 +25,30 @@
                 @endif
             </div>
 
-            <div class="overflow-x-auto w-full border p-3">
-                <table class="border-separate divide-y divide-gray-200 border w-full">
-                    <thead class="bg-gray-50 p-2">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col"
-                            class="border px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            #
-                        </th>
-                        <th scope="col"
-                            class="border px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            {{__('Name')}}
-                        </th>
-                        <th scope="col"
-                            class="border px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            {{__('Key')}}
-                        </th>
-                        <th scope="col"
-                            class="border px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            {{__('Description')}}
-                        </th>
-                        <th scope="col"
-                            class="border px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            {{__('Actions')}}
-                        </th>
+                        <th scope="col" class="text-center"> # </th>
+                        <th scope="col" class="text-center">{{__('Name')}}</th>
+                        <th scope="col" class="text-center">{{__('Key')}}</th>
+                        <th scope="col" class="text-center">{{__('Description')}}</th>
+                        <th scope="col" class="text-center">{{__('Actions')}}</th>
                     </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody>
                     @foreach($projects as $index => $project)
                         <tr>
-                            <td class="border px-6 py-4 whitespace-nowrap">
-                                <div class="primary text-sm text-gray-900 text-center">{{++$index}}</div>
-                            </td>
-                            <td class="border px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 text-center">{{$project->name}}</div>
-                            </td>
-                            <td class="border px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 text-center">{{$project->key}}</div>
-                            </td>
-                            <td class="border px-6 py-4">
-                                <div class="text-sm text-gray-900 text-center">{{$project->description}}</div>
-                            </td>
-                            <td class="border px-6 py-4 whitespace-nowrap">
-                                <x-button class="mr-2 mb-2"
+                            <td class="text-center">{{++$index}}</td>
+                            <td class="text-center">{{$project->name}}</td>
+                            <td class="text-center">{{$project->key}}</td>
+                            <td>{{$project->description}}</td>
+                            <td class="text-center">
+                                <x-button class="btn btn-primary mr-2 mb-2"
                                           onclick="window.location='{{ route('projects.edit', ['id'=> $project->id]) }}'">
                                     {{ __('Edit') }}
                                 </x-button>
-                                <x-button class="mr-2 mb-2"
+                                <x-button class="btn btn-primary mr-2 mb-2"
                                           onclick="window.location='{{ route('issues.index', ['projectId' => $project->id]) }}'">
                                     {{ __('View') }}
                                 </x-button>
@@ -79,7 +56,7 @@
                                       action="{{ route('projects.destroy', ['id' => $project->id]) }}">
                                     @csrf
                                     @method('DELETE')
-                                    <x-button class="mr-2 mb-2">
+                                    <x-button class="btn btn-danger mr-2 mb-2">
                                         {{ __('Delete') }}
                                     </x-button>
                                 </form>

@@ -1,4 +1,4 @@
-<x-app-layout :isHeaderWidthFull="true" class="flex">
+<x-app-layout class="d-flex container mt-5">
     <x-slot name="navigation">
         @include('layouts.navigation', ['extendedClasses' => '!max-w-none'])
     </x-slot>
@@ -7,12 +7,12 @@
     @include('layouts.sidebar')
 
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-weight-bold h5 text-dark mb-0 fs-4 py-2">
             {{ __('crud.list', ['object' => 'Workflow']) }}
         </h2>
     </x-slot>
 
-    <div class="py-12 grow">
+    <div class="py-12 flex-grow-1">
         <div class="sm:pr-6 lg:pr-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
@@ -33,8 +33,8 @@
                 @endif
             </div>
 
-            <div class="overflow-x-auto w-full border p-3">
-                <table class="border-separate divide-y divide-gray-200 border w-full">
+            <div class="overflow-x-auto w-full border p-3 w-full col-12">
+                <table id="workflow-table" class="border-separate divide-y divide-gray-200 border w-100">
                     <thead class="bg-gray-50 p-2">
                     <tr>
                         <th scope="col"
@@ -62,12 +62,18 @@
         </div>
     </div>
     @push('scripts')
-        <script>
+        <script type="module">
             $(document).ready(function () {
                 $('#workflow-table').DataTable({
                     processing: true,
-                    serverSide: true,
+                    serverSide: false,
                     data: {!! json_encode($workFlows) !!},
+                    columnDefs: [
+                        {"className": "text-center", "targets": "_all"}
+                    ],
+                    buttons: [
+                        'copy', 'excel', 'pdf'
+                    ],
                     columns: [
                         {data: 'id', name: 'id'},
                         {data: 'title', name: 'title'},
@@ -77,18 +83,18 @@
                             name: 'actions',
                             orderable: false,
                             searchable: false,
-                            render: function(data, type, full, meta) {
-                                var editUrl = "{{ route('workFlows.edit', ['workFlow' => ':id', 'projectId' => ':projectId']) }}";
+                            render: function (data, type, full, meta) {
+                                let editUrl = "{{ route('workFlows.edit', ['workFlow' => ':id', 'projectId' => ':projectId']) }}";
                                 editUrl = editUrl.replace(':id', data.id).replace(':projectId', data.project_id);
 
-                                var deleteUrl = "{{ route('workFlows.destroy', ['workFlow' => ':id', 'projectId' => ':projectId']) }}";
+                                let deleteUrl = "{{ route('workFlows.destroy', ['workFlow' => ':id', 'projectId' => ':projectId']) }}";
                                 deleteUrl = deleteUrl.replace(':id', data.id).replace(':projectId', data.project_id);
 
-                                return '<a href="' + editUrl + '" class="btn btn-info mr-2">Edit</a>' +
+                                return '<a href="' + editUrl + '" class="btn btn-sm btn-info mr-2 text-blue">Edit</a>' +
                                     '<form method="POST" action="' + deleteUrl + '" class="inline">' +
                                     '@csrf' +
                                     '@method("DELETE")' +
-                                    '<button type="submit" class="btn btn-danger">Delete</button>' +
+                                    '<button type="submit" class="btn btn-danger btn-sm">Delete</button>' +
                                     '</form>';
                             }
                         }
