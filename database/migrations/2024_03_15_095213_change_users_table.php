@@ -19,7 +19,7 @@ class ChangeUsersTable extends Migration
             $table->string('last_name');
             $table->string('user_name');
             $table->string('avatar')->nullable();
-            $table->string('phone_number')->unique();
+            $table->string('phone_number')->unique()->nullable();
             $table->tinyInteger('is_active')->default(true);
             $table->tinyInteger('is_admin')->default(false);
         });

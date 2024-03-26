@@ -8,13 +8,6 @@ use Illuminate\Support\Carbon;
 
 class ProjectFactory extends Factory
 {
-    private $projectTypes = [
-        'scrum',
-        'kanban',
-        'bug',
-        'empty',
-    ];
-
     /**
      * Define the model's default state.
      *
@@ -31,7 +24,6 @@ class ProjectFactory extends Factory
             'description' => $this->faker->text,
             'start_date' => $startDate,
             'end_date' => Carbon::parse($startDate)->addMonth(),
-            'type' => $this->projectTypes[array_rand($this->projectTypes)],
         ];
     }
 }

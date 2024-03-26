@@ -11,6 +11,8 @@ class WorkFlow extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);

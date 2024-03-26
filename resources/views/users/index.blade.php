@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('crud.list', ['object' => 'User']) }}
-        </h2>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="font-weight-bold text-dark mb-0 fs-4 py-2">{{ __('crud.list', ['object' => 'User']) }}</h2>
+        </div>
     </x-slot>
 
     <div class="py-12">
@@ -59,7 +59,7 @@
                     @foreach($users as $index => $user)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="primary text-sm text-gray-900 text-center">{{$index}}</div>
+                                <div class="primary text-sm text-gray-900 text-center">{{++$index}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div
