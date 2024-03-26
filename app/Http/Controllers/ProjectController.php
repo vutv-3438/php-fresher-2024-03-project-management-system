@@ -2,14 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Common\Enums\Action;
+use App\Common\Enums\Resource;
+use App\Common\Enums\Status;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
+use App\Services\Repositories\Contracts\IProjectRepository;
+use App\Services\Repositories\Contracts\IRoleRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
-class ProjectController extends Controller
+class ProjectController extends BaseController
 {
+    private IProjectRepository $projectRepository;
+    private IRoleRepository $roleRepository;
+
+    public function __construct(
+        IProjectRepository $projectRepository,
+        IRoleRepository    $roleRepository
+    )
+    {
+        $this->projectRepository = $projectRepository;
+        $this->roleRepository = $roleRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +36,7 @@ class ProjectController extends Controller
     public function index()
     {
         return view('projects.index', [
-            'projects' => Project::all()->load('roles.users'),
+            'projects' => $this->projectRepository->getProjectsByUser(auth()->user()->id)
         ]);
     }
 
@@ -41,24 +59,21 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
         try {
-            DB::table('projects')->insert([
-                'name' => $request->name,
-                'key' => $request->key,
-                'description' => $request->description,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'type' => $request->type,
-            ]);
+            DB::transaction(function () use ($request) {
+                $project = $this->projectRepository->create($request->input());
+                $this->roleRepository->createManagerRoleInProject($project->id);
+            });
 
-            return redirect()->route('projects.index')->with([
-                'type' => 'success',
-                'msg' => __('The :object has been created', ['object' => 'project']),
-            ]);
+            return redirectWithActionStatus(
+                Status::SUCCESS,
+                'projects.index',
+                Resource::PROJECT,
+                Action::CREATE,
+            );
         } catch (\Exception $e) {
-            return back()->with([
-                'type' => 'danger',
-                'msg' => __('Something went wrong'),
-            ]);
+            Log::error($e->getMessage());
+
+            return backWithActionStatus();
         }
     }
 
@@ -70,9 +85,9 @@ class ProjectController extends Controller
      */
     public function edit(int $id)
     {
-        $project = DB::table('projects')->find($id);
+        $project = $this->projectRepository->find($id);
         if (!$project) {
-            abort(404);
+            return static::NotFound();
         }
 
         return view('projects.edit', [
@@ -89,30 +104,19 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, int $id)
     {
-        $project = DB::table('projects')->find($id);
-        if (!$project) {
-            abort(404);
-        }
-
         try {
-            DB::table('projects')->update([
-                'name' => $request->name,
-                'key' => $request->key,
-                'description' => $request->description,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'type' => $request->type,
-            ]);
+            $this->projectRepository->update($request->input(), $id);
 
-            return redirect()->route('projects.index')->with([
-                'type' => 'success',
-                'msg' => __('The :object has been updated', ['object' => 'project']),
-            ]);
+            return redirectWithActionStatus(
+                Status::SUCCESS,
+                'projects.index',
+                Resource::PROJECT,
+                Action::UPDATE,
+            );
         } catch (\Exception $e) {
-            return back()->with([
-                'type' => 'danger',
-                'msg' => __('Something went wrong'),
-            ]);
+            Log::error($e->getMessage());
+
+            return backWithActionStatus();
         }
     }
 
@@ -125,17 +129,18 @@ class ProjectController extends Controller
     public function destroy(int $id)
     {
         try {
-            DB::table('projects')->delete($id);
+            $this->projectRepository->delete($id);
 
-            return back()->with([
-                'type' => 'success',
-                'msg' => __('The :object has been deleted', ['object' => 'project']),
-            ]);
+            return redirectWithActionStatus(
+                Status::SUCCESS,
+                'projects.index',
+                Resource::PROJECT,
+                Action::DELETE,
+            );
         } catch (\Exception $e) {
-            return back()->with([
-                'type' => 'danger',
-                'msg' => __('Something went wrong'),
-            ]);
+            Log::error($e->getMessage());
+
+            return backWithActionStatus();
         }
     }
 }
