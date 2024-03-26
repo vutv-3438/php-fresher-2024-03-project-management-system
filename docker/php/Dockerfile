@@ -1,5 +1,8 @@
 FROM php:7.4-fpm
 
+ARG UID
+ARG GID
+
 # Set up working dir
 WORKDIR /var/www
 
@@ -28,3 +31,9 @@ RUN php composer-setup.php --version=1.10.13 --install-dir=/usr/local/bin --file
 RUN php -r "unlink('composer-setup.php');"
 ENV COMPOSER_VERSION=1.10.13
 ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_MEMORY_LIMIT=-1
+
+RUN groupadd -g $GID group_tvv && \
+    useradd --no-log-init -m -s /bin/bash -N -u $UID -g $GID tvv
+
+USER tvv

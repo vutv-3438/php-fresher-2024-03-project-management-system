@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
-            <h2 class="font-weight-bold text-dark mb-0 fs-4 py-2">{{ __('crud.update', ['object' => 'work flow']) }}</h2>
+            <h2 class="font-weight-bold text-dark mb-0 fs-4 py-2">{{ __('crud.update', ['object' => 'flow']) }}</h2>
         </div>
     </x-slot>
 
@@ -28,9 +28,9 @@
                                 <x-alert :type="session('type')" :message="session('msg')"/>
                             @endif
                             <form
-                                    action="{{ route('workFlows.update', ['workFlow' => $workFlow->id, 'projectId' => getRouteParam('projectId')]) }}"
-                                    method="POST"
-                                    class="border p-3 rounded"
+                                action="{{ route('workFlows.update', ['workFlow' => $workFlow->id, 'projectId' => getRouteParam('projectId')]) }}"
+                                method="POST"
+                                class="border p-3 rounded"
                             >
                                 @csrf
                                 @method('PUT')
@@ -92,12 +92,14 @@
         </div>
     </div>
     @push('scripts')
-        <script>
+        <script src="{{ asset('js/pages/workFlows/edit.js') }}" type="module"></script>
+        <script type="module">
             const EDIT_URL = "{{ route('workFlowSteps.edit', ['workFlowId' => $workFlow->id, 'workFlowStep' => ':id', 'projectId' => getRouteParam('projectId')]) }}";
             const DELETE_URL = "{{ route('workFlowSteps.destroy', ['workFlowId' => $workFlow->id, 'workFlowStep' => ':id', 'projectId' => getRouteParam('projectId')]) }}";
             const DATA = {!! json_encode($workFlow->workFlowSteps) !!};
             const CSRF = "{{ csrf_token() }}";
+
+            renderDataTable(DATA, EDIT_URL, DELETE_URL, CSRF, {edit: '{{ __('Edit') }}', delete: '{{ __('Delete') }}'});
         </script>
-        <script src="{{ asset('js/pages/workFlows/edit.js') }}" type="module"></script>
     @endpush
 </x-app-layout>

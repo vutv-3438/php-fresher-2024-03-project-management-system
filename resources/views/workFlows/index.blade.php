@@ -18,7 +18,7 @@
 
             <div class="mt-4 mb-4">
                 <x-button
-                        onclick="window.location='{{ route('workFlows.create', ['projectId' => getRouteParam('projectId')]) }}'">
+                    onclick="window.location='{{ route('workFlows.create', ['projectId' => getRouteParam('projectId')]) }}'">
                     {{ __('crud.create', ['object' => 'flow']) }}
                 </x-button>
             </div>
@@ -58,12 +58,14 @@
         </div>
     </div>
     @push('scripts')
-        <script>
+        <script src="{{ asset('js/pages/workFlows/index.js') }}" type="module"></script>
+        <script type="module">
             const DATA = {!! json_encode($workFlows) !!};
             const CSRF = "{{ csrf_token() }}";
             const EDIT_URL = "{{ route('workFlows.edit', ['workFlow' => ':id', 'projectId' => ':projectId']) }}";
             const DELETE_URL = "{{ route('workFlows.destroy', ['workFlow' => ':id', 'projectId' => ':projectId']) }}";
+
+            renderDataTable(DATA, EDIT_URL, DELETE_URL, CSRF, {edit: '{{ __('Edit')}}', delete: '{{ __('Delete')}}' });
         </script>
-        <script src="{{ asset('js/pages/workFlows/index.js') }}" type="module"></script>
     @endpush
 </x-app-layout>

@@ -21,7 +21,7 @@ class WorkFlowController extends BaseController
 
     public function __construct(
         IWorkFlowRepository $flowRepository,
-        IProjectRepository  $projectRepository
+        IProjectRepository $projectRepository
     ) {
         $this->flowRepository = $flowRepository;
         $this->projectRepository = $projectRepository;

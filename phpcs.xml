@@ -22,6 +22,23 @@
     <rule ref="PSR12">
         <exclude-pattern>database</exclude-pattern>
     </rule>
+    <rule ref="PSR12.Operators.OperatorSpacing.NoSpaceBefore">
+        <exclude-pattern>.*\.js</exclude-pattern>
+    </rule>
+    <rule ref="PSR12.Operators.OperatorSpacing.NoSpaceAfter">
+        <exclude-pattern>.*\.js</exclude-pattern>
+    </rule>
+
+    <rule ref="Generic.WhiteSpace.ScopeIndent.IncorrectExact">
+        <exclude-pattern>.*\.js</exclude-pattern>
+    </rule>
+
+    <rule ref="Squiz.WhiteSpace.OperatorSpacing.NoSpaceBefore">
+        <exclude-pattern>.*\.js</exclude-pattern>
+    </rule>
+    <rule ref="Squiz.WhiteSpace.OperatorSpacing.NoSpaceAfter">
+        <exclude-pattern>.*\.js</exclude-pattern>
+    </rule>
 
     <rule ref="SunAsterisk">
         <exclude name="Squiz.Strings.ConcatenationSpacing.PaddingFound"/>
