@@ -20,6 +20,8 @@ class Project extends Model
         'end_date' => 'string',
     ];
 
+    protected $guarded = [];
+
     public function issues(): HasMany
     {
         return $this->hasMany(Issue::class);

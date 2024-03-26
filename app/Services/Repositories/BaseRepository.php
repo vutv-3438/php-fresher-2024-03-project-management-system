@@ -4,8 +4,8 @@ namespace App\Services\Repositories;
 
 use App\Common\Enums\Action;
 use App\Services\Repositories\Contracts\IBaseRepository;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use \Illuminate\Database\Eloquent\Collection;
 
 abstract class BaseRepository implements IBaseRepository
 {
