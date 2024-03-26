@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\WorkFLowStepController;
+use App\Http\Controllers\WorkFlowStepController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,5 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('projects/{projectId}/workFlows/{workFlowId}')->group(function () {
-    Route::resource('workFlowSteps', WorkFLowStepController::class);
+    Route::resource('workFlowSteps', WorkFlowStepController::class)
+        ->except(['index']);
 });
