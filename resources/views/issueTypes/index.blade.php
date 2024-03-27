@@ -24,7 +24,7 @@
             </div>
 
             <div class="mt-2 mb-2">
-                @if(session('type') && session('msg'))
+                @if (session('type') && session('msg'))
                     <x-alert :type="session('type')" :message="session('msg')" class="mt-4"/>
                 @endif
             </div>
