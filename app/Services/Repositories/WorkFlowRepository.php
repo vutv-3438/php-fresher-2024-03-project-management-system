@@ -22,6 +22,14 @@ class WorkFlowRepository extends BaseRepository implements IWorkFlowRepository
         ]);
     }
 
+    public function update(array $attributes, int $id): bool
+    {
+        return parent::update([
+            'title' => $attributes['title'],
+            'description' => $attributes['description'],
+        ], $id);
+    }
+
     public function getWorkFlowByProjectId(int $projectId): Collection
     {
         return $this->model->where('project_id', $projectId)->get();

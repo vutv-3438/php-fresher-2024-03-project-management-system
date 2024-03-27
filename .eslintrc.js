@@ -32,5 +32,9 @@ module.exports = {
             "ignoreTemplateLiterals": true
         }],
         "max-lines": ["error", 200],
+        'no-unused-vars': 'off',
+    },
+    globals: {
+        $: true,
     }
 }
