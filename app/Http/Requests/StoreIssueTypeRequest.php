@@ -26,7 +26,7 @@ class StoreIssueTypeRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'projectId' => ['required', 'int', Rule::exists('projects', 'id')],
+            'projectId' => ['required', 'integer', Rule::exists('projects', 'id')],
         ];
     }
 }
