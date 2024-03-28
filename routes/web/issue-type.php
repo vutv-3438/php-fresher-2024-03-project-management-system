@@ -15,5 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('projects/{projectId}')->group(function () {
-    Route::resource('issueTypes', IssueTypeController::class);
+    Route::resource('issueTypes', IssueTypeController::class)
+        ->except(['show']);
 });
