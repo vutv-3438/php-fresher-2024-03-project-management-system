@@ -1,72 +1,132 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('crud.create', ['object' => 'project']) }}
-        </h2>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="font-weight-bold text-dark mb-0 fs-4 py-2">
+                {{ __('crud.create', ['object' => 'Project']) }}
+            </h2>
+        </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    {{ __('crud.create', ['object' => 'project']) }}
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            {{ __('crud.create', ['object' => 'project']) }}
+                        </div>
+
+                        <div class="card-body">
+                            @if (session('type') && session('msg'))
+                                <x-alert type="danger" :message="session('msg')"/>
+                            @endif
+
+                            <form action="{{ route('projects.store') }}" method="POST">
+                                @csrf
+
+                                <div class="form-group row mb-4">
+                                    <label for="name"
+                                           class="col-md-4 col-form-label text-md-right">
+                                        {{ __('Name') }}
+                                    </label>
+
+                                    <div class="col-md-6">
+                                        <input id="name" type="text"
+                                               class="form-control @error('name') is-invalid @enderror" name="name"
+                                               required autocomplete="name" autofocus>
+
+                                        @error('name')
+                                        <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mb-4">
+                                    <label for="key"
+                                           class="col-md-4 col-form-label text-md-right">{{ __('Key') }}</label>
+
+                                    <div class="col-md-6">
+                                        <input id="key" type="text"
+                                               class="form-control @error('key') is-invalid @enderror" name="key"
+                                               required autocomplete="key">
+
+                                        @error('key')
+                                        <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mb-4">
+                                    <label for="description"
+                                           class="col-md-4 col-form-label text-md-right">{{ __('Description') }}</label>
+
+                                    <div class="col-md-6">
+                                        <textarea id="description"
+                                                  class="form-control @error('description') is-invalid @enderror"
+                                                  name="description" required></textarea>
+
+                                        @error('description')
+                                        <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mb-4">
+                                    <label for="start_date"
+                                           class="col-md-4 col-form-label text-md-right">{{ __('Start Date') }}</label>
+
+                                    <div class="col-md-6">
+                                        <input id="start_date" type="date"
+                                               class="form-control @error('start_date') is-invalid @enderror"
+                                               name="start_date" required>
+
+                                        @error('start_date')
+                                        <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mb-4">
+                                    <label for="end_date"
+                                           class="col-md-4 col-form-label text-md-right">{{ __('End Date') }}</label>
+
+                                    <div class="col-md-6">
+                                        <input id="end_date" type="date"
+                                               class="form-control @error('end_date') is-invalid @enderror"
+                                               name="end_date" required>
+
+                                        @error('end_date')
+                                        <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <div class="col-md-6">
+                                        <button type="submit" class="btn btn-primary">
+                                            {{ __('Save') }}
+                                        </button>
+                                        <a class="btn btn-link" href="{{ route('projects.index') }}">
+                                            {{ __('Go Back') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-            @if ($errors->any())
-                <div class="alert alert-danger mt-4">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>
-                                <x-alert type="danger" :message="$error"/>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            @if (session('type') && session('msg'))
-                <x-alert type="danger" :message="session('msg')"/>
-            @endif
-
-            <form action="{{ route('projects.store') }}"
-                  method="POST"
-                  class="overflow-x-auto w-full border p-3"
-                  style="padding: 10px;"
-            >
-                @csrf
-                <div class="form-group">
-                    <x-label for="name" value="Name"></x-label>
-                    <x-input id="name" name="name" class="w-full"></x-input>
-                </div>
-                <div class="form-group">
-                    <x-label for="key" value="Key"></x-label>
-                    <x-input id="key" name="key" class="w-full"></x-input>
-                </div>
-                <div class="form-group">
-                    <x-label for="description" value="Description"></x-label>
-                    <textarea id="description" name="description" class="w-full"></textarea>
-                </div>
-                <div class="form-group">
-                    <x-label for="type" value="Type"></x-label>
-                    <x-input id="type" name="type" class="w-full"></x-input>
-                </div>
-                <div class="form-group">
-                    <x-label for="start_date" value="Start date"></x-label>
-                    <input id="start_date" name="start_date" type="date" />
-                </div>
-                <div class="form-group">
-                    <x-label for="end_date" value="End date"></x-label>
-                    <input id="end_date" name="end_date" type="date" />
-                </div>
-
-                <div class="mt-4 mb-4">
-                    <x-button>
-                        {{__('Create')}}
-                    </x-button>
-                    <a class="underline" href="{{route('projects.index')}}">{{ __('Go Back') }}</a>
-                </div>
-            </form>
-
         </div>
     </div>
 </x-app-layout>
+

@@ -2,23 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Common\Enums\Action;
+use App\Common\Enums\Resource;
+use App\Common\Enums\Status;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
-use App\Models\Project;
+use App\Services\Repositories\Contracts\IProjectRepository;
+use App\Services\Repositories\Contracts\IRoleRepository;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
-class ProjectController extends Controller
+class ProjectController extends BaseController
 {
+    private IProjectRepository $projectRepository;
+    private IRoleRepository $roleRepository;
+
+    public function __construct(
+        IProjectRepository $projectRepository,
+        IRoleRepository $roleRepository
+    ) {
+        $this->projectRepository = $projectRepository;
+        $this->roleRepository = $roleRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return View
      */
-    public function index()
+    public function index(): View
     {
         return view('projects.index', [
-            'projects' => Project::all()->load('roles.users'),
+            'projects' => $this->projectRepository->getProjectsByUser(auth()->user()->id),
         ]);
     }
 
@@ -27,7 +44,7 @@ class ProjectController extends Controller
      *
      * @return View
      */
-    public function create()
+    public function create(): View
     {
         return view('projects.create');
     }
@@ -36,29 +53,26 @@ class ProjectController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreProjectRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function store(StoreProjectRequest $request)
+    public function store(StoreProjectRequest $request): RedirectResponse
     {
         try {
-            DB::table('projects')->insert([
-                'name' => $request->name,
-                'key' => $request->key,
-                'description' => $request->description,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'type' => $request->type,
-            ]);
+            DB::transaction(function () use ($request) {
+                $project = $this->projectRepository->create($request->input());
+                $this->roleRepository->createManagerRoleInProject($project->id);
+            });
 
-            return redirect()->route('projects.index')->with([
-                'type' => 'success',
-                'msg' => __('The :object has been created', ['object' => 'project']),
-            ]);
+            return redirectWithActionStatus(
+                Status::SUCCESS,
+                'projects.index',
+                Resource::PROJECT,
+                Action::CREATE,
+            );
         } catch (\Exception $e) {
-            return back()->with([
-                'type' => 'danger',
-                'msg' => __('Something went wrong'),
-            ]);
+            Log::error($e->getMessage());
+
+            return backWithActionStatus();
         }
     }
 
@@ -68,12 +82,9 @@ class ProjectController extends Controller
      * @param int $id
      * @return View
      */
-    public function edit(int $id)
+    public function edit(int $id): View
     {
-        $project = DB::table('projects')->find($id);
-        if (!$project) {
-            abort(404);
-        }
+        $project = $this->projectRepository->findOrFail($id);
 
         return view('projects.edit', [
             'project' => $project,
@@ -84,35 +95,24 @@ class ProjectController extends Controller
      * Update the specified resource in storage.
      *
      * @param UpdateProjectRequest $request
-     * @param Project $project
-     * @return \Illuminate\Http\RedirectResponse
+     * @param int $id
+     * @return RedirectResponse
      */
-    public function update(UpdateProjectRequest $request, int $id)
+    public function update(UpdateProjectRequest $request, int $id): RedirectResponse
     {
-        $project = DB::table('projects')->find($id);
-        if (!$project) {
-            abort(404);
-        }
-
         try {
-            DB::table('projects')->update([
-                'name' => $request->name,
-                'key' => $request->key,
-                'description' => $request->description,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'type' => $request->type,
-            ]);
+            $this->projectRepository->update($request->input(), $id);
 
-            return redirect()->route('projects.index')->with([
-                'type' => 'success',
-                'msg' => __('The :object has been updated', ['object' => 'project']),
-            ]);
+            return redirectWithActionStatus(
+                Status::SUCCESS,
+                'projects.index',
+                Resource::PROJECT,
+                Action::UPDATE,
+            );
         } catch (\Exception $e) {
-            return back()->with([
-                'type' => 'danger',
-                'msg' => __('Something went wrong'),
-            ]);
+            Log::error($e->getMessage());
+
+            return backWithActionStatus();
         }
     }
 
@@ -120,22 +120,23 @@ class ProjectController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function destroy(int $id)
+    public function destroy(int $id): RedirectResponse
     {
         try {
-            DB::table('projects')->delete($id);
+            $this->projectRepository->delete($id);
 
-            return back()->with([
-                'type' => 'success',
-                'msg' => __('The :object has been deleted', ['object' => 'project']),
-            ]);
+            return redirectWithActionStatus(
+                Status::SUCCESS,
+                'projects.index',
+                Resource::PROJECT,
+                Action::DELETE,
+            );
         } catch (\Exception $e) {
-            return back()->with([
-                'type' => 'danger',
-                'msg' => __('Something went wrong'),
-            ]);
+            Log::error($e->getMessage());
+
+            return backWithActionStatus();
         }
     }
 }
