@@ -4,6 +4,7 @@ namespace App\Services\Repositories;
 
 use App\Models\WorkFlowStep;
 use App\Services\Repositories\Contracts\IWorkFlowStepRepository;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class WorkFlowStepRepository extends BaseRepository implements IWorkFlowStepRepository
@@ -31,5 +32,14 @@ class WorkFlowStepRepository extends BaseRepository implements IWorkFlowStepRepo
             'name' => $attributes['name'],
             'description' => $attributes['description'],
         ], $id);
+    }
+
+    public function getAllByProjectId(int $projectId, array $relations = []): Builder
+    {
+        return $this->model
+            ->with($relations)
+            ->whereHas('workFlow', function ($query) use ($projectId) {
+                return $query->where('project_id', $projectId);
+            });
     }
 }

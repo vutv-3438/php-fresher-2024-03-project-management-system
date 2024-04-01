@@ -7,6 +7,7 @@ use App\Services\Repositories\Contracts\IIssueTypeRepository;
 use App\Services\Repositories\Contracts\ILogTimeRepository;
 use App\Services\Repositories\Contracts\IProjectRepository;
 use App\Services\Repositories\Contracts\IRoleRepository;
+use App\Services\Repositories\Contracts\IUserRepository;
 use App\Services\Repositories\Contracts\IUserRoleRepository;
 use App\Services\Repositories\Contracts\IWorkFlowRepository;
 use App\Services\Repositories\Contracts\IWorkFlowStepRepository;
@@ -15,6 +16,7 @@ use App\Services\Repositories\IssueTypeRepository;
 use App\Services\Repositories\LogTimeRepository;
 use App\Services\Repositories\ProjectRepository;
 use App\Services\Repositories\RoleRepository;
+use App\Services\Repositories\UserRepository;
 use App\Services\Repositories\UserRoleRepository;
 use App\Services\Repositories\WorkFlowRepository;
 use App\Services\Repositories\WorkFlowStepRepository;
@@ -37,6 +39,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->singleton(IUserRoleRepository::class, UserRoleRepository::class);
         $this->app->singleton(IWorkFlowRepository::class, WorkFlowRepository::class);
         $this->app->singleton(IWorkFlowStepRepository::class, WorkFlowStepRepository::class);
+        $this->app->singleton(IUserRepository::class, UserRepository::class);
     }
 
     /**

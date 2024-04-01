@@ -37,7 +37,7 @@ class WorkFlowController extends BaseController
     {
         return view('workFlows.index', [
             'workFlows' => $this->flowRepository->getWorkFlowByProjectId($projectId),
-            'project' => $this->projectRepository->find($projectId),
+            'project' => $this->projectRepository->findOrFail($projectId),
         ]);
     }
 
@@ -128,7 +128,7 @@ class WorkFlowController extends BaseController
      * @param WorkFlow $workFlow
      * @return RedirectResponse
      */
-    public function destroy(int $projectId, WorkFlow $workFlow)
+    public function destroy(int $projectId, WorkFlow $workFlow): RedirectResponse
     {
         try {
             $this->flowRepository->delete($workFlow);

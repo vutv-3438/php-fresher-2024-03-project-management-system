@@ -4,6 +4,7 @@ namespace App\Services\Repositories;
 
 use App\Common\Enums\Action;
 use App\Services\Repositories\Contracts\IBaseRepository;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -63,5 +64,17 @@ abstract class BaseRepository implements IBaseRepository
     public function deleteByModel(Model $model): bool
     {
         return $model->delete();
+    }
+
+    public function findOrFail(int $id): Model
+    {
+        return $this->model->findOrFail($id);
+    }
+
+    public function getAllByProjectId(int $projectId, array $relations = []): Builder
+    {
+        return $this->model
+            ->with($relations)
+            ->where('project_id', $projectId);
     }
 }
