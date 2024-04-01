@@ -1,3 +1,5 @@
+/* global renderActions */
+
 window.renderDataTable = function renderDataTable(data, editUrl, deleteUrl, csrf, msg)
 {
     $(document).ready(function () {
