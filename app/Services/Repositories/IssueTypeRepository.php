@@ -4,7 +4,6 @@ namespace App\Services\Repositories;
 
 use App\Models\IssueType;
 use App\Services\Repositories\Contracts\IIssueTypeRepository;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class IssueTypeRepository extends BaseRepository implements IIssueTypeRepository
@@ -29,10 +28,5 @@ class IssueTypeRepository extends BaseRepository implements IIssueTypeRepository
             'name' => $attributes['name'],
             'description' => $attributes['description'],
         ], $id);
-    }
-
-    public function getIssueTypesByProjectId(int $projectId): Collection
-    {
-        return $this->model->where('project_id', $projectId)->get();
     }
 }

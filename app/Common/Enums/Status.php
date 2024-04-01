@@ -2,6 +2,8 @@
 
 namespace App\Common\Enums;
 
+use ReflectionClass;
+
 class Status
 {
     public const DANGER = 'danger';
@@ -9,9 +11,8 @@ class Status
 
     public static function toArray(): array
     {
-        return [
-            self::SUCCESS,
-            self::DANGER,
-        ];
+        $currentClass = new ReflectionClass(self::class);
+
+        return $currentClass->getConstants();
     }
 }

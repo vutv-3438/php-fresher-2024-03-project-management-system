@@ -11,10 +11,12 @@ class IssueTypeFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->name,
+            'description' => $this->faker->text,
+            'project_id' => 1,
         ];
     }
 }

@@ -20,6 +20,6 @@ class WorkFlowStep extends Model
 
     public function issues(): HasMany
     {
-        return $this->hasMany(Issue::class);
+        return $this->hasMany(Issue::class, 'status_id', 'id');
     }
 }

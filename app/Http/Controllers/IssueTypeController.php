@@ -34,7 +34,7 @@ class IssueTypeController extends Controller
     public function index(int $projectId): View
     {
         return view('issueTypes.index', [
-            'issueTypes' => $this->issueTypeRepository->getIssueTypesByProjectId($projectId),
+            'issueTypes' => $this->issueTypeRepository->getAllByProjectId($projectId)->get(),
             'project' => $this->projectRepository->find($projectId),
         ]);
     }

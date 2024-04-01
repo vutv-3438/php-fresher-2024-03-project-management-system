@@ -2,6 +2,8 @@
 
 namespace App\Common\Enums;
 
+use ReflectionClass;
+
 class Resource
 {
     public const PROJECT = 'project';
@@ -14,4 +16,11 @@ class Resource
     public const USER_ROLE = 'user_role';
     public const WORK_FLOW = 'work_flow';
     public const WORK_FLOW_STEP = 'work_flow_step';
+
+    public static function toArray(): array
+    {
+        $currentClass = new ReflectionClass(self::class);
+
+        return $currentClass->getConstants();
+    }
 }

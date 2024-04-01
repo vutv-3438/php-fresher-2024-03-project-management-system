@@ -41,7 +41,7 @@ if (!function_exists('backWithActionStatus')) {
         ?string $action = null,
         ?string $status = null
     ): RedirectResponse {
-        $message = $status
+        $message = !$status || !$action || !$object
             ? __('Something went wrong')
             : __("The :object has been $action" . getActionSuffix($action), ['object' => $object]);
         $type = in_array($status, Status::toArray()) ? $status : Status::DANGER;

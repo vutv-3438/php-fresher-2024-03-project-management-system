@@ -2,6 +2,8 @@
 
 namespace App\Common\Enums;
 
+use ReflectionClass;
+
 class Priority
 {
     public const HIGHEST = 'Highest';
@@ -12,12 +14,8 @@ class Priority
 
     public static function toArray(): array
     {
-        return [
-            self::LOWEST,
-            self::LOW,
-            self::MEDIUM,
-            self::HIGH,
-            self::HIGHEST,
-        ];
+        $currentClass = new ReflectionClass(self::class);
+
+        return $currentClass->getConstants();
     }
 }
