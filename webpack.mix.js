@@ -12,8 +12,18 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
+    .sass('resources/sass/app.scss', 'public/css')
+    // Pages
     .js('resources/js/pages/workFlows/index.js', 'public/js/pages/workFlows')
     .js('resources/js/pages/workFlows/edit.js', 'public/js/pages/workFlows')
     .js('resources/js/pages/issueTypes/index.js', 'public/js/pages/issueTypes')
-    .sass('resources/sass/app.scss', 'public/css')
+    .js('resources/js/pages/issues/index.js', 'public/js/pages/issues')
+    .js('resources/js/pages/issues/edit.js', 'public/js/pages/issues')
+    // Quill
+    .js('node_modules/quill/dist/quill.js', 'public/js')
+    .postCss('node_modules/quill/dist/quill.snow.css', 'public/css')
+    .postCss('node_modules/quill/dist/quill.bubble.css', 'public/css')
+    // Select2
+    .copy('node_modules/select2/dist/css/select2.min.css', 'public/css')
+    .copy('node_modules/select2/dist/js/select2.min.js', 'public/js')
     .sourceMaps();

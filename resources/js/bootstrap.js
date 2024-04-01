@@ -16,8 +16,12 @@ window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+require('jquery');
 window.$ = window.jQuery = require('jquery');
 
+window.Quill = require('quill');
+
+require('select2');
 require('datatables.net-bs4');
 require('datatables.net-buttons-bs4');
 /**
