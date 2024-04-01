@@ -13,6 +13,7 @@ use App\Services\Repositories\Contracts\IIssueTypeRepository;
 use App\Services\Repositories\Contracts\IProjectRepository;
 use App\Services\Repositories\Contracts\IUserRepository;
 use App\Services\Repositories\Contracts\IWorkFlowStepRepository;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
@@ -43,9 +44,12 @@ class IssueController extends Controller
      * Display a listing of the resource.
      * @param int $projectId
      * @return View
+     * @throws AuthorizationException
      */
     public function index(int $projectId): View
     {
+        $this->authorize(Action::VIEW_ANY, Issue::class);
+
         return view('issues.index', [
             'issues' => $this->issueRepository->getAllByProjectId($projectId, [
                 'issueType:id,name',
@@ -61,9 +65,12 @@ class IssueController extends Controller
      *
      * @param int $projectId
      * @return View
+     * @throws AuthorizationException
      */
     public function create(int $projectId): View
     {
+        $this->authorize(Action::CREATE, Issue::class);
+
         return view('issues.create', [
             'issueTypes' => $this->issueTypeRepository->getAllByProjectId($projectId)->get(),
             'statuses' => $this->stepRepository->getAllByProjectId($projectId)->get(),
@@ -78,9 +85,12 @@ class IssueController extends Controller
      * @param StoreIssueRequest $request
      * @param int $projectId
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function store(StoreIssueRequest $request, int $projectId): RedirectResponse
     {
+        $this->authorize(Action::CREATE, Issue::class);
+
         try {
             $this->issueRepository->create($request->input());
 
@@ -104,9 +114,12 @@ class IssueController extends Controller
      * @param int $projectId
      * @param Issue $issue
      * @return View
+     * @throws AuthorizationException
      */
     public function edit(int $projectId, Issue $issue): View
     {
+        $this->authorize(Action::UPDATE, $issue);
+
         return view('issues.edit', [
             'issue' => $issue->load([
                 'childIssues.issueType:id,name',
@@ -131,12 +144,15 @@ class IssueController extends Controller
      * @param int $projectId
      * @param int $issueId
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function update(
         UpdateIssueRequest $request,
         int $projectId,
         int $issueId
     ): RedirectResponse {
+        $this->authorize(Action::UPDATE, $this->issueRepository->find($issueId));
+
         try {
             $this->issueRepository->update($request->input(), $issueId);
 
@@ -160,9 +176,12 @@ class IssueController extends Controller
      * @param int $projectId
      * @param Issue $issue
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function destroy(int $projectId, Issue $issue): RedirectResponse
     {
+        $this->authorize(Action::DELETE, $issue);
+
         try {
             $this->issueRepository->delete($issue);
 
