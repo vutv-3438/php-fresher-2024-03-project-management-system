@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\DateGreaterThanCurrent;
 use App\Rules\StartDateGreaterThanEnddate;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -13,7 +12,7 @@ class UpdateProjectRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -28,11 +27,10 @@ class UpdateProjectRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'key' => ['required', 'string', 'max:255'],
-            'start_date' => ['nullable', 'date', new DateGreaterThanCurrent()],
+            'start_date' => ['nullable', 'date'],
             'end_date' => [
                 'nullable',
                 'date',
-                new DateGreaterThanCurrent(),
                 new StartDateGreaterThanEnddate($this->request->get('start_date')),
             ],
         ];
