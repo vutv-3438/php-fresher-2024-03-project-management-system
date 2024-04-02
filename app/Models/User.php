@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Common\Enums\Role as RoleEnum;
 use DragonCode\Support\Facades\Helpers\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -110,5 +111,23 @@ class User extends Authenticatable
         static::addGlobalScope('ancient', function (Builder $builder) {
             $builder->where('is_active', self::IS_ACTIVE);
         });
+    }
+
+    public function hasRoleInProject(string $roleName, int $projectId): bool
+    {
+        return $this->roles->contains(function ($role) use ($roleName, $projectId) {
+            return $role->name === $roleName && $role->project_id === $projectId;
+        });
+    }
+
+    public function hasPermissionInProject(int $projectId, string $resource, string $action): bool
+    {
+        return $this->hasRoleInProject(RoleEnum::MANAGER, $projectId) ||
+            $this->roles->contains(function ($role) use ($resource, $action, $projectId) {
+                return $role->project_id === $projectId && $role->roleClaims()
+                    ->where('claim_type', $resource)
+                    ->where('claim_value', $action)
+                    ->exists();
+            });
     }
 }

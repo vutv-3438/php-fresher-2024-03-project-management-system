@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Common\Enums\Action;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
@@ -14,9 +17,12 @@ class UserController extends Controller
      * Display a listing of the resource.
      *
      * @return View
+     * @throws AuthorizationException
      */
-    public function index()
+    public function index(): View
     {
+        $this->authorize(Action::VIEW_ANY, User::class);
+
         return view('users.index', [
             'users' => User::all()->load('roles'),
         ]);
@@ -26,9 +32,12 @@ class UserController extends Controller
      * Show the form for creating a new resource.
      *
      * @return View
+     * @throws AuthorizationException
      */
-    public function create()
+    public function create(): View
     {
+        $this->authorize(Action::CREATE, User::class);
+
         return view('users.create');
     }
 
@@ -36,10 +45,13 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreUserRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
+     * @throws AuthorizationException
      */
-    public function store(StoreUserRequest $request)
+    public function store(StoreUserRequest $request): RedirectResponse
     {
+        $this->authorize(Action::CREATE, User::class);
+
         try {
             User::create([
                 'user_name' => $request->user_name,
@@ -66,9 +78,12 @@ class UserController extends Controller
      *
      * @param User $user
      * @return View
+     * @throws AuthorizationException
      */
-    public function edit(User $user)
+    public function edit(User $user): View
     {
+        $this->authorize(Action::UPDATE, $user);
+
         return view('users.edit', [
             'user' => $user,
         ]);
@@ -79,10 +94,13 @@ class UserController extends Controller
      *
      * @param UpdateUserRequest $request
      * @param User $user
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
+     * @throws AuthorizationException
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
+        $this->authorize(Action::UPDATE, $user);
+
         try {
             $user->user_name = $request->user_name;
             $user->first_name = $request->first_name;
@@ -108,10 +126,13 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param User $user
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
+     * @throws AuthorizationException
      */
-    public function destroy(User $user)
+    public function destroy(User $user): RedirectResponse
     {
+        $this->authorize(Action::DELETE, $user);
+
         try {
             $user->delete();
 

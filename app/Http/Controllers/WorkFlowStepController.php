@@ -9,6 +9,7 @@ use App\Http\Requests\StoreWorkFlowStepRequest;
 use App\Http\Requests\UpdateWorkFlowStepRequest;
 use App\Models\WorkFlowStep;
 use App\Services\Repositories\Contracts\IWorkFlowStepRepository;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
@@ -26,9 +27,12 @@ class WorkFlowStepController extends Controller
      * Show the form for creating a new resource.
      *
      * @return View
+     * @throws AuthorizationException
      */
     public function create(): View
     {
+        $this->authorize(Action::CREATE, WorkFlowStep::class);
+
         return view('workFlowSteps.create');
     }
 
@@ -39,12 +43,15 @@ class WorkFlowStepController extends Controller
      * @param int $projectId
      * @param int $workFlowId
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function store(
         StoreWorkFlowStepRequest $request,
         int $projectId,
         int $workFlowId
     ): RedirectResponse {
+        $this->authorize(Action::CREATE, WorkFlowStep::class);
+
         try {
             $this->stepRepository->create($request->input());
 
@@ -72,9 +79,12 @@ class WorkFlowStepController extends Controller
      * @param int $workFlowId
      * @param WorkFlowStep $workFlowStep
      * @return View
+     * @throws AuthorizationException
      */
     public function edit(int $projectId, int $workFlowId, WorkFlowStep $workFlowStep): View
     {
+        $this->authorize(Action::UPDATE, WorkFlowStep::class);
+
         return view('workFlowSteps.edit', [
             'workFlowStep' => $workFlowStep,
         ]);
@@ -88,6 +98,7 @@ class WorkFlowStepController extends Controller
      * @param int $workFlowId
      * @param int $stepId
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function update(
         UpdateWorkFlowStepRequest $request,
@@ -95,6 +106,8 @@ class WorkFlowStepController extends Controller
         int $workFlowId,
         int $stepId
     ): RedirectResponse {
+        $this->authorize(Action::UPDATE, $this->stepRepository->find($stepId));
+
         try {
             $this->stepRepository->update($request->input(), $stepId);
 
@@ -122,12 +135,15 @@ class WorkFlowStepController extends Controller
      * @param int $workFlowId
      * @param WorkFlowStep $workFlowStep
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function destroy(
         int $projectId,
         int $workFlowId,
         WorkFlowStep $workFlowStep
     ): RedirectResponse {
+        $this->authorize(Action::DELETE, $workFlowStep);
+
         try {
             $this->stepRepository->delete($workFlowStep);
 

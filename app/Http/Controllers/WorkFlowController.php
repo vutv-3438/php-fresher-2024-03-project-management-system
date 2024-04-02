@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateWorkFlowRequest;
 use App\Models\WorkFlow;
 use App\Services\Repositories\Contracts\IProjectRepository;
 use App\Services\Repositories\Contracts\IWorkFlowRepository;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
@@ -32,9 +33,12 @@ class WorkFlowController extends BaseController
      *
      * @param int $projectId
      * @return View
+     * @throws AuthorizationException
      */
     public function index(int $projectId): View
     {
+        $this->authorize(Action::VIEW_ANY, WorkFlow::class);
+
         return view('workFlows.index', [
             'workFlows' => $this->flowRepository->getWorkFlowByProjectId($projectId),
             'project' => $this->projectRepository->findOrFail($projectId),
@@ -45,9 +49,12 @@ class WorkFlowController extends BaseController
      * Show the form for creating a new resource.
      *
      * @return View
+     * @throws AuthorizationException
      */
     public function create(): View
     {
+        $this->authorize(Action::CREATE, WorkFlow::class);
+
         return view('workFlows.create');
     }
 
@@ -57,9 +64,12 @@ class WorkFlowController extends BaseController
      * @param StoreWorkFlowRequest $request
      * @param int $projectId
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function store(StoreWorkFlowRequest $request, int $projectId): RedirectResponse
     {
+        $this->authorize(Action::CREATE, WorkFlow::class);
+
         try {
             $this->flowRepository->create($request->input());
 
@@ -83,9 +93,12 @@ class WorkFlowController extends BaseController
      * @param WorkFlow $workFlow
      * @param int $projectId
      * @return View
+     * @throws AuthorizationException
      */
     public function edit(int $projectId, WorkFlow $workFlow): View
     {
+        $this->authorize(Action::UPDATE, WorkFlow::class);
+
         return view('workFlows.edit', [
             'workFlow' => $workFlow->load('workFlowSteps'),
         ]);
@@ -98,12 +111,15 @@ class WorkFlowController extends BaseController
      * @param int $projectId
      * @param int $workFlowId
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function update(
         UpdateWorkFlowRequest $request,
         int $projectId,
         int $workFlowId
     ): RedirectResponse {
+        $this->authorize(Action::UPDATE, WorkFlow::class);
+
         try {
             $this->flowRepository->update($request->input(), $workFlowId);
 
@@ -127,9 +143,12 @@ class WorkFlowController extends BaseController
      * @param int $projectId
      * @param WorkFlow $workFlow
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function destroy(int $projectId, WorkFlow $workFlow): RedirectResponse
     {
+        $this->authorize(Action::DELETE, WorkFlow::class);
+
         try {
             $this->flowRepository->delete($workFlow);
 

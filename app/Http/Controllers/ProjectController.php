@@ -7,8 +7,10 @@ use App\Common\Enums\Resource;
 use App\Common\Enums\Status;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Models\Project;
 use App\Services\Repositories\Contracts\IProjectRepository;
 use App\Services\Repositories\Contracts\IRoleRepository;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -31,9 +33,12 @@ class ProjectController extends BaseController
      * Display a listing of the resource.
      *
      * @return View
+     * @throws AuthorizationException
      */
     public function index(): View
     {
+        $this->authorize(Action::VIEW_ANY, Project::class);
+
         return view('projects.index', [
             'projects' => $this->projectRepository->getProjectsByUser(auth()->user()->id),
         ]);
@@ -43,9 +48,12 @@ class ProjectController extends BaseController
      * Show the form for creating a new resource.
      *
      * @return View
+     * @throws AuthorizationException
      */
     public function create(): View
     {
+        $this->authorize(Action::VIEW, Project::class);
+
         return view('projects.create');
     }
 
@@ -54,9 +62,12 @@ class ProjectController extends BaseController
      *
      * @param StoreProjectRequest $request
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function store(StoreProjectRequest $request): RedirectResponse
     {
+        $this->authorize(Action::CREATE, Project::class);
+
         try {
             DB::transaction(function () use ($request) {
                 $project = $this->projectRepository->create($request->input());
@@ -81,9 +92,12 @@ class ProjectController extends BaseController
      *
      * @param int $id
      * @return View
+     * @throws AuthorizationException
      */
     public function edit(int $id): View
     {
+        $this->authorize(Action::UPDATE, $this->projectRepository->find($id));
+
         $project = $this->projectRepository->findOrFail($id);
 
         return view('projects.edit', [
@@ -97,9 +111,12 @@ class ProjectController extends BaseController
      * @param UpdateProjectRequest $request
      * @param int $id
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function update(UpdateProjectRequest $request, int $id): RedirectResponse
     {
+        $this->authorize(Action::UPDATE, $this->projectRepository->find($id));
+
         try {
             $this->projectRepository->update($request->input(), $id);
 
@@ -121,9 +138,12 @@ class ProjectController extends BaseController
      *
      * @param int $id
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function destroy(int $id): RedirectResponse
     {
+        $this->authorize(Action::DELETE, $this->projectRepository->find($id));
+
         try {
             $this->projectRepository->delete($id);
 
