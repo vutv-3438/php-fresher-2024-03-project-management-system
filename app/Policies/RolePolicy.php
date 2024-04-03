@@ -39,7 +39,7 @@ class RolePolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $role->project_id === $projectId &&
+        return $role->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::ROLE,
@@ -73,7 +73,7 @@ class RolePolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $role->project_id === $projectId &&
+        return $role->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::ROLE,
@@ -92,7 +92,7 @@ class RolePolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $role->project_id === $projectId &&
+        return $role->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::ROLE,

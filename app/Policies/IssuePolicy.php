@@ -39,7 +39,7 @@ class IssuePolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $issue->project_id === $projectId &&
+        return $issue->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::ISSUE,
@@ -73,7 +73,7 @@ class IssuePolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $issue->project_id === $projectId &&
+        return $issue->project_id === +$projectId &&
             $user->hasPermissionInProject($projectId, Resource::ISSUE, Action::UPDATE);
     }
 
@@ -88,7 +88,7 @@ class IssuePolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $issue->project_id === $projectId &&
+        return $issue->project_id === +$projectId &&
             $user->hasPermissionInProject($projectId, Resource::ISSUE, Action::DELETE);
     }
 

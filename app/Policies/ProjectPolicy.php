@@ -21,11 +21,7 @@ class ProjectPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionInProject(
-            getRouteParam('projectId'),
-            Resource::PROJECT,
-            Action::VIEW_ANY
-        );
+        return true;
     }
 
     /**
@@ -37,9 +33,9 @@ class ProjectPolicy
      */
     public function view(User $user, Project $project): bool
     {
-        $projectId = getRouteParam('projectId');
+        $projectId = getRouteParam('id');
 
-        return $project->project_id === $projectId &&
+        return $project->id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::PROJECT,
@@ -67,9 +63,9 @@ class ProjectPolicy
      */
     public function update(User $user, Project $project): bool
     {
-        $projectId = getRouteParam('projectId');
+        $projectId = getRouteParam('id');
 
-        return $project->project_id === $projectId &&
+        return $project->id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::PROJECT,
@@ -86,9 +82,9 @@ class ProjectPolicy
      */
     public function delete(User $user, Project $project): bool
     {
-        $projectId = getRouteParam('projectId');
+        $projectId = getRouteParam('id');
 
-        return $project->project_id === $projectId &&
+        return $project->id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::PROJECT,

@@ -39,7 +39,7 @@ class WorkFlowPolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $workFlow->project_id === $projectId &&
+        return $workFlow->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::WORK_FLOW,
@@ -73,7 +73,7 @@ class WorkFlowPolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $workFlow->project_id === $projectId &&
+        return $workFlow->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::WORK_FLOW,
@@ -92,7 +92,7 @@ class WorkFlowPolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $workFlow->project_id === $projectId &&
+        return $workFlow->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::WORK_FLOW,

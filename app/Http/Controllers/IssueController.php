@@ -151,7 +151,7 @@ class IssueController extends Controller
         int $projectId,
         int $issueId
     ): RedirectResponse {
-        $this->authorize(Action::UPDATE, $this->issueRepository->find($issueId));
+        $this->authorize(Action::UPDATE, $this->issueRepository->findOrFail($issueId));
 
         try {
             $this->issueRepository->update($request->input(), $issueId);
