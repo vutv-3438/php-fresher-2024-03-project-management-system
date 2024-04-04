@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    private $webRouteFiles = [
+    private array $webRouteFiles = [
         'main',
         'project',
         'work-flow',
@@ -19,6 +19,7 @@ class RouteServiceProvider extends ServiceProvider
         'role',
         'issue-type',
         'log-time',
+        'role-claim',
     ];
 
     /**

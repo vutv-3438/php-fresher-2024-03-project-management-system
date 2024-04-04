@@ -6,12 +6,20 @@ use App\Common\Enums\Action;
 use App\Common\Enums\Resource;
 use App\Models\RoleClaim;
 use App\Models\User;
+use App\Services\Repositories\Contracts\IRoleRepository;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
 class RoleClaimPolicy
 {
     use HandlesAuthorization;
+
+    private IRoleRepository $roleRepository;
+
+    public function __construct(IRoleRepository $roleRepository)
+    {
+        $this->roleRepository = $roleRepository;
+    }
 
     /**
      * Determine whether the user can view any models.
@@ -21,11 +29,15 @@ class RoleClaimPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionInProject(
-            getRouteParam('projectId'),
-            Resource::ROLE_CLAIM,
-            Action::VIEW_ANY
-        );
+        $projectId = getRouteParam('projectId');
+        $role = getRouteParam('role');
+
+        return $this->roleRepository->checkRoleInProject($role->id, $projectId) &&
+            $user->hasPermissionInProject(
+                getRouteParam('projectId'),
+                Resource::ROLE_CLAIM,
+                Action::VIEW_ANY
+            );
     }
 
     /**
@@ -39,7 +51,7 @@ class RoleClaimPolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $roleClaim->role->project_id === $projectId &&
+        return $roleClaim->role->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::ROLE_CLAIM,
@@ -55,11 +67,15 @@ class RoleClaimPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionInProject(
-            getRouteParam('projectId'),
-            Resource::ROLE_CLAIM,
-            Action::CREATE
-        );
+        $projectId = getRouteParam('projectId');
+        $roleId = getRouteParam('roleId') ?? getRouteParam('role')->id;
+
+        return $this->roleRepository->checkRoleInProject($roleId, $projectId) &&
+            $user->hasPermissionInProject(
+                $projectId,
+                Resource::ROLE_CLAIM,
+                Action::CREATE
+            );
     }
 
     /**
@@ -73,7 +89,7 @@ class RoleClaimPolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $roleClaim->role->project_id === $projectId &&
+        return $roleClaim->role->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::ROLE_CLAIM,
@@ -92,7 +108,7 @@ class RoleClaimPolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $roleClaim->role->project_id === $projectId &&
+        return $roleClaim->role->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::ROLE_CLAIM,
