@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Common\Enums\Action;
+use App\Common\Enums\Http\StatusCode;
 use App\Common\Enums\Resource;
 use App\Models\RoleClaim;
 use App\Models\User;
@@ -19,6 +20,18 @@ class RoleClaimPolicy
     public function __construct(IRoleRepository $roleRepository)
     {
         $this->roleRepository = $roleRepository;
+    }
+
+    public function before(User $user, string $ability, ?RoleClaim $roleClaim): bool
+    {
+        $projectId = getRouteParam('projectId');
+        $roleId = getRouteParam('roleId') ?? getRouteParam('role')->id;
+
+        if ($roleClaim->role->id !== +$roleId) {
+            abort(StatusCode::NOT_FOUND);
+        }
+
+        return $this->roleRepository->checkInProject($roleId, $projectId);
     }
 
     /**

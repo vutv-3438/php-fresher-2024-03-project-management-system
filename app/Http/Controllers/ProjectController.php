@@ -52,7 +52,7 @@ class ProjectController extends BaseController
      */
     public function create(): View
     {
-        $this->authorize(Action::VIEW, Project::class);
+        $this->authorize(Action::CREATE, Project::class);
 
         return view('projects.create');
     }
@@ -96,7 +96,7 @@ class ProjectController extends BaseController
      */
     public function edit(int $id): View
     {
-        $this->authorize(Action::UPDATE, $this->projectRepository->find($id));
+        $this->authorize(Action::UPDATE, $this->projectRepository->findOrFail($id));
 
         $project = $this->projectRepository->findOrFail($id);
 
@@ -115,7 +115,7 @@ class ProjectController extends BaseController
      */
     public function update(UpdateProjectRequest $request, int $id): RedirectResponse
     {
-        $this->authorize(Action::UPDATE, $this->projectRepository->find($id));
+        $this->authorize(Action::UPDATE, $this->projectRepository->findOrFail($id));
 
         try {
             $this->projectRepository->update($request->input(), $id);
@@ -142,7 +142,7 @@ class ProjectController extends BaseController
      */
     public function destroy(int $id): RedirectResponse
     {
-        $this->authorize(Action::DELETE, $this->projectRepository->find($id));
+        $this->authorize(Action::DELETE, $this->projectRepository->findOrFail($id));
 
         try {
             $this->projectRepository->delete($id);

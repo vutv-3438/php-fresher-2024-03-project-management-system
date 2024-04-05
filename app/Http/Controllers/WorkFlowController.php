@@ -97,7 +97,7 @@ class WorkFlowController extends BaseController
      */
     public function edit(int $projectId, WorkFlow $workFlow): View
     {
-        $this->authorize(Action::UPDATE, WorkFlow::class);
+        $this->authorize(Action::UPDATE, $workFlow);
 
         return view('workFlows.edit', [
             'workFlow' => $workFlow->load('workFlowSteps'),
@@ -118,7 +118,7 @@ class WorkFlowController extends BaseController
         int $projectId,
         int $workFlowId
     ): RedirectResponse {
-        $this->authorize(Action::UPDATE, WorkFlow::class);
+        $this->authorize(Action::UPDATE, $this->flowRepository->findOrFail($workFlowId));
 
         try {
             $this->flowRepository->update($request->input(), $workFlowId);
@@ -147,7 +147,7 @@ class WorkFlowController extends BaseController
      */
     public function destroy(int $projectId, WorkFlow $workFlow): RedirectResponse
     {
-        $this->authorize(Action::DELETE, WorkFlow::class);
+        $this->authorize(Action::DELETE, $workFlow);
 
         try {
             $this->flowRepository->delete($workFlow);

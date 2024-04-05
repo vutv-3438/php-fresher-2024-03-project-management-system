@@ -77,4 +77,12 @@ abstract class BaseRepository implements IBaseRepository
             ->with($relations)
             ->where('project_id', $projectId);
     }
+
+    public function checkInProject(int $id, int $projectId): bool
+    {
+        return $this->model
+            ->where('id', $id)
+            ->where('project_id', $projectId)
+            ->exists();
+    }
 }

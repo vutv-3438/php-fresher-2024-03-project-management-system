@@ -93,7 +93,6 @@ class RolePolicy
         $projectId = getRouteParam('projectId');
 
         return $role->project_id === +$projectId &&
-            !$role->isManager() &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::ROLE,
