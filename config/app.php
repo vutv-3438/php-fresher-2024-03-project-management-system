@@ -231,6 +231,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Alert' => \App\View\Components\Alert::class,
+        'Resource' => \App\Common\Enums\Resource::class,
+        'Action' => \App\Common\Enums\Action::class,
+        'Role' => \App\Common\Enums\Role::class,
 
     ],
 

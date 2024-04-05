@@ -3,20 +3,22 @@
 window.renderDataTable = function renderDataTable(data, editUrl, deleteUrl, csrf, msg)
 {
     $(document).ready(function () {
-        $(`#workflow-table`).DataTable({
+        $('#claims-table').DataTable({
             processing: true,
             serverSide: false,
             data: data,
-            columnDefs: [
-                {"className": "text-center", "targets": "_all"},
-            ],
-            buttons: [
-                'copy', 'excel', 'pdf'
-            ],
+            columnDefs: [{"className": "text-center", "targets": "_all"},],
+            buttons: ['copy', 'excel', 'pdf'],
             columns: [
-                {data: 'id', name: 'id'},
-                {data: 'title', name: 'title'},
-                {data: 'description', name: 'description'},
+                {
+                    data: null,
+                    name: 'order',
+                    render: function (data, type, row, meta) {
+                        return meta.row + 1;
+                    }
+                },
+                {data: 'claim_type', name: 'type'},
+                {data: 'claim_value', name: 'value'},
                 {
                     data: null,
                     name: 'actions',
@@ -25,8 +27,8 @@ window.renderDataTable = function renderDataTable(data, editUrl, deleteUrl, csrf
                     render: function (data) {
                         return renderActions(data, editUrl, deleteUrl, csrf, {msg});
                     }
-                }
-            ]
+                }]
         });
     });
 }
+

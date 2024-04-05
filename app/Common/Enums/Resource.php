@@ -2,6 +2,7 @@
 
 namespace App\Common\Enums;
 
+use Illuminate\Support\Arr;
 use ReflectionClass;
 
 class Resource
@@ -21,6 +22,6 @@ class Resource
     {
         $currentClass = new ReflectionClass(self::class);
 
-        return $currentClass->getConstants();
+        return Arr::except($currentClass->getConstants(), ['USER_ROLE', 'USER']);
     }
 }

@@ -24,7 +24,7 @@ window.renderDataTable = function renderDataTable(data, editUrl, deleteUrl, csrf
                     orderable: false,
                     searchable: false,
                     render: function (data) {
-                        return renderActions(data, editUrl, deleteUrl, csrf, msg);
+                        return renderActions(data, editUrl, deleteUrl, csrf, {msg});
                     }
                 }
             ]

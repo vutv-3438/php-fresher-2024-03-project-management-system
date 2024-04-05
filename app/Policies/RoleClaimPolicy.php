@@ -42,11 +42,15 @@ class RoleClaimPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionInProject(
-            getRouteParam('projectId'),
-            Resource::ROLE_CLAIM,
-            Action::VIEW_ANY
-        );
+        $projectId = getRouteParam('projectId');
+        $role = getRouteParam('role');
+
+        return $this->roleRepository->checkRoleInProject($role->id, $projectId) &&
+            $user->hasPermissionInProject(
+                getRouteParam('projectId'),
+                Resource::ROLE_CLAIM,
+                Action::VIEW_ANY
+            );
     }
 
     /**
@@ -76,11 +80,15 @@ class RoleClaimPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionInProject(
-            getRouteParam('projectId'),
-            Resource::ROLE_CLAIM,
-            Action::CREATE
-        );
+        $projectId = getRouteParam('projectId');
+        $roleId = getRouteParam('roleId') ?? getRouteParam('role')->id;
+
+        return $this->roleRepository->checkRoleInProject($roleId, $projectId) &&
+            $user->hasPermissionInProject(
+                $projectId,
+                Resource::ROLE_CLAIM,
+                Action::CREATE
+            );
     }
 
     /**
