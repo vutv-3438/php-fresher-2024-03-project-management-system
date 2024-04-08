@@ -100,7 +100,9 @@ class WorkFlowController extends BaseController
         $this->authorize(Action::UPDATE, $workFlow);
 
         return view('workFlows.edit', [
-            'workFlow' => $workFlow->load('workFlowSteps'),
+            'workFlow' => $workFlow->load([
+                'workFlowSteps.previousStatuses',
+            ]),
         ]);
     }
 

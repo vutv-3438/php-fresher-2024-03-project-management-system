@@ -1,9 +1,12 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="font-weight-bold text-dark mb-0 fs-4 py-2">{{ __('crud.update', ['object' => 'flow']) }}</h2>
-        </div>
-    </x-slot>
+    {{-- Page navigation--}}
+    <x-slot name="navigation"></x-slot>
+
+    <style>
+        td {
+            width: 150px;
+        }
+    </style>
 
     <div class="py-12">
         <div class="container">
@@ -76,30 +79,75 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    <a href="{{ route('workFlowSteps.create', ['workFlowId' => $workFlow->id, 'projectId' => getRouteParam('projectId')]) }}"
+                                       class="underline text-primary">{{ __('Add work flow step') }}</a>
                                 </div>
-                                <a href="{{ route('workFlowSteps.create', ['workFlowId' => $workFlow->id, 'projectId' => getRouteParam('projectId')]) }}"
-                                   class="underline text-primary">{{ __('Add work flow step') }}</a>
+                                <div class="mb-3">
+                                    <label for="steps" class="form-label">{{__('Setting next steps')}}</label>
+                                    <div>
+                                        <table class="table table-borderless">
+                                            <thead>
+                                            <tr>
+                                                <th class="border text-center"
+                                                    style="width: 150px;">{{ __('Current Status') }}</th>
+                                                <th
+                                                    class="border text-center"
+                                                    colspan="{{ count($workFlow->workFlowSteps) }}">
+                                                    {{ __('Next Statuses Allowed') }}
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td class="border"></td>
+                                                @foreach($workFlow->workFlowSteps as $step)
+                                                    <td class="border text-center">{{ $step->name }}</td>
+                                                @endforeach
+                                            </tr>
+                                            @foreach($workFlow->workFlowSteps as $currentStep)
+                                                <tr>
+                                                    <td class="border text-center">{{ $currentStep->name }}</td>
+                                                    @foreach($workFlow->workFlowSteps as $nextStep)
+                                                        <td class="border text-center">
+                                                            <input
+                                                                name="next_steps[{{$currentStep->id}}][]"
+                                                                value="{{$nextStep->id}}"
+                                                                type="checkbox"
+                                                                style="transform: scale(1.5);"
+                                                                {{ in_array($currentStep->id, $nextStep->previousStatuses->pluck('id')->all()) ? 'checked' : '' }}
+                                                            >
+                                                        </td>
+                                                    @endforeach
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                                 <div class="mt-4 mb-4">
                                     <button type="submit" class="btn btn-primary me-2">{{__('Update')}}</button>
                                     <a class="underline"
                                        href="{{ route('workFlows.index', ['projectId' => getRouteParam('projectId')]) }}">{{ __('Go Back') }}</a>
                                 </div>
                             </form>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    @push('scripts')
-        <script src="{{ asset('js/pages/workFlows/edit.js') }}" type="module"></script>
-        <script type="module">
-            const EDIT_URL = "{{ route('workFlowSteps.edit', ['workFlowId' => $workFlow->id, 'workFlowStep' => ':id', 'projectId' => getRouteParam('projectId')]) }}";
-            const DELETE_URL = "{{ route('workFlowSteps.destroy', ['workFlowId' => $workFlow->id, 'workFlowStep' => ':id', 'projectId' => getRouteParam('projectId')]) }}";
-            const DATA = {!! json_encode($workFlow->workFlowSteps) !!};
-            const CSRF = "{{ csrf_token() }}";
+        @push('scripts')
+            <script src="{{ asset('js/pages/workFlows/edit.js') }}" type="module"></script>
+            <script type="module">
+                const EDIT_URL = "{{ route('workFlowSteps.edit', ['workFlowId' => $workFlow->id, 'workFlowStep' => ':id', 'projectId' => getRouteParam('projectId')]) }}";
+                const DELETE_URL = "{{ route('workFlowSteps.destroy', ['workFlowId' => $workFlow->id, 'workFlowStep' => ':id', 'projectId' => getRouteParam('projectId')]) }}";
+                const DATA = {!! json_encode($workFlow->workFlowSteps) !!};
+                const CSRF = "{{ csrf_token() }}";
 
-            renderDataTable(DATA, EDIT_URL, DELETE_URL, CSRF, {edit: '{{ __('Edit') }}', delete: '{{ __('Delete') }}'});
-        </script>
+                renderDataTable(DATA, EDIT_URL, DELETE_URL, CSRF, {
+                    edit: '{{ __('Edit') }}',
+                    delete: '{{ __('Delete') }}'
+                });
+            </script>
     @endpush
 </x-app-layout>
