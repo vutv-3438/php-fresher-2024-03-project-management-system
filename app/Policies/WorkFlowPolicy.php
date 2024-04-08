@@ -88,7 +88,7 @@ class WorkFlowPolicy
      * @param WorkFlow $workFlow
      * @return bool
      */
-    public function delete(User $user, WorkFlow $workFlow)
+    public function delete(User $user, WorkFlow $workFlow): bool
     {
         $projectId = getRouteParam('projectId');
 

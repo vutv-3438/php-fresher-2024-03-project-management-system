@@ -7,7 +7,6 @@ use App\Common\Enums\Resource;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Auth\Access\Response;
 
 class ProjectPolicy
 {
@@ -90,29 +89,5 @@ class ProjectPolicy
                 Resource::PROJECT,
                 Action::DELETE
             );
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param User $user
-     * @param Project $project
-     * @return Response|bool
-     */
-    public function restore(User $user, Project $project)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param User $user
-     * @param Project $project
-     * @return Response|bool
-     */
-    public function forceDelete(User $user, Project $project)
-    {
-        //
     }
 }

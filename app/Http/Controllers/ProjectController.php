@@ -90,15 +90,15 @@ class ProjectController extends BaseController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
+     * @param int $projectId
      * @return View
      * @throws AuthorizationException
      */
-    public function edit(int $id): View
+    public function edit(int $projectId): View
     {
-        $this->authorize(Action::UPDATE, $this->projectRepository->findOrFail($id));
+        $this->authorize(Action::UPDATE, $this->projectRepository->findOrFail($projectId));
 
-        $project = $this->projectRepository->findOrFail($id);
+        $project = $this->projectRepository->findOrFail($projectId);
 
         return view('projects.edit', [
             'project' => $project,
