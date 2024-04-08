@@ -6,7 +6,9 @@
         <div class="row">
             <h3>@if(isset($issue->issueType->name))
                     {{ $issue->issueType->name }}
-                @endif #{{ $issue->id }} </h3>
+                @endif 
+                #{{ $issue->id }} 
+            </h3>
             <div>
                 <div class="card shadow-sm">
                     <div class="card-body" style="background-color: #ffffdd">
