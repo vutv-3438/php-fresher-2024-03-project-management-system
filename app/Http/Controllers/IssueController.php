@@ -10,11 +10,12 @@ use App\Http\Requests\UpdateIssueRequest;
 use App\Models\Issue;
 use App\Services\Repositories\Contracts\IIssueRepository;
 use App\Services\Repositories\Contracts\IIssueTypeRepository;
-use App\Services\Repositories\Contracts\IProjectRepository;
 use App\Services\Repositories\Contracts\IUserRepository;
 use App\Services\Repositories\Contracts\IWorkFlowStepRepository;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
@@ -23,20 +24,17 @@ class IssueController extends Controller
     private IIssueRepository $issueRepository;
     private IIssueTypeRepository $issueTypeRepository;
     private IWorkFlowStepRepository $stepRepository;
-    private IProjectRepository $projectRepository;
     private IUserRepository $userRepository;
 
     public function __construct(
         IIssueRepository $issueRepository,
         IIssueTypeRepository $issueTypeRepository,
         IWorkFlowStepRepository $stepRepository,
-        IProjectRepository $projectRepository,
         IUserRepository $userRepository
     ) {
         $this->issueRepository = $issueRepository;
         $this->issueTypeRepository = $issueTypeRepository;
         $this->stepRepository = $stepRepository;
-        $this->projectRepository = $projectRepository;
         $this->userRepository = $userRepository;
     }
 
@@ -50,13 +48,37 @@ class IssueController extends Controller
     {
         $this->authorize(Action::VIEW_ANY, Issue::class);
 
-        return view('issues.index', [
-            'issues' => $this->issueRepository->getAllByProjectId($projectId, [
-                'issueType:id,name',
-                'status:id,name',
-                'assignee:id,first_name,last_name',
-            ])->get(),
-            'project' => $this->projectRepository->findOrFail($projectId),
+        return view('issues.index');
+    }
+
+    /**
+     * @param Request $request
+     * @param int $projectId
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function getAllByProjectId(Request $request, int $projectId): JsonResponse
+    {
+        $this->authorize(Action::VIEW_ANY, Issue::class);
+
+        $draw = $request->input('draw');
+        $start = $request->input('start');
+        $length = $request->input('length', 10);
+        $issues = $this->issueRepository->getAllByProjectId($projectId, [
+            'issueType:id,name',
+            'status:id,name',
+            'assignee:id,first_name,last_name',
+        ])
+            ->offset($start)
+            ->limit($length)
+            ->get();
+        $totalRecords = $this->issueRepository->getAllByProjectId($projectId)->count();
+
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $totalRecords,
+            'issues' => $issues,
         ]);
     }
 
@@ -76,6 +98,21 @@ class IssueController extends Controller
             'statuses' => $this->stepRepository->getAllByProjectId($projectId)->get(),
             'assignees' => $this->userRepository->getAllByProjectId($projectId)->get(),
             'issues' => $this->issueRepository->getAllByProjectId($projectId)->get(),
+        ]);
+    }
+
+    public function show(int $projectId, Issue $issue): View
+    {
+        return view('issues.detail', [
+            'issue' => $issue->load([
+                'childIssues.issueType:id,name',
+                'childIssues.status:id,name',
+                'childIssues.assignee:id,first_name,last_name',
+                'issueType',
+                'status',
+                'assignee',
+                'parentIssue',
+            ]),
         ]);
     }
 
@@ -126,7 +163,7 @@ class IssueController extends Controller
                 'childIssues.status:id,name',
                 'childIssues.assignee:id,first_name,last_name',
                 'issueType',
-                'status',
+                'status.nextStatusesAllowed',
                 'assignee',
                 'parentIssue',
             ]),

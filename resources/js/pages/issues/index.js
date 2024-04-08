@@ -1,12 +1,17 @@
 /* global renderActions */
 
-window.renderDataTable = function renderDataTable(data, editUrl, deleteUrl, csrf, msg)
+window.renderDataTable = function renderDataTable(data, editUrl, deleteUrl, csrf, options)
 {
     $(document).ready(function () {
         $(`#issues-table`).DataTable({
             processing: true,
-            serverSide: false,
-            data: data,
+            serverSide: true,
+            deferRender: true,
+            ajax: {
+                url: options.getUrl,
+                type: "GET",
+                dataSrc: 'issues'
+            },
             columnDefs: [
                 {"className": "text-center", "targets": "_all"},
             ],
@@ -45,7 +50,7 @@ window.renderDataTable = function renderDataTable(data, editUrl, deleteUrl, csrf
                     orderable: false,
                     searchable: false,
                     render: function (data) {
-                        return renderActions(data, editUrl, deleteUrl, csrf, {msg});
+                        return renderActions(data, editUrl, deleteUrl, csrf, {msg: options.msg});
                     }
                 }
             ]
