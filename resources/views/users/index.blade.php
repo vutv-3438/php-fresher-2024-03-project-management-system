@@ -1,15 +1,15 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('crud.list', ['object' => 'User']) }}
-        </h2>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="font-weight-bold text-dark mb-0 fs-4 py-2">{{ __('Admin page') }}</h2>
+        </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    {{ __('crud.list', ['object' => 'User']) }}
+            <div class="overflow-hidden fs-5">
+                <div class="p-6 border-bottom border-gray-200">
+                    {{ __('crud.list', ['object' => 'Users']) }}
                 </div>
             </div>
 
@@ -26,76 +26,46 @@
             </div>
 
             <div class="overflow-x-auto w-full border p-3">
-                <table class="divide-y divide-gray-200 w-full">
+                <table id="users-table" class="divide-y divide-gray-200 w-full">
                     <thead class="bg-gray-50 p-2">
                     <tr>
                         <th scope="col"
-                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            class="border px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                             #
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            class="border px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                             {{__('Name')}}
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            class="border px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                             {{__('Email')}}
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            class="border px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                             {{__('Phone')}}
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            {{__('Roles')}}
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            class="border px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                             {{__('Actions')}}
                         </th>
                     </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($users as $index => $user)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="primary text-sm text-gray-900 text-center">{{$index}}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div
-                                    class="text-sm text-gray-900 text-center">{{$user->first_name}} {{$user->last_name}}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 text-center">{{$user->email}}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 text-center">{{$user->phone_number ?? '---'}}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @foreach($user->roles as $index => $role)
-                                    <div class="text-sm text-gray-900 text-center">+> {{ $role->name}}</div>
-                                @endforeach
-                            </td>
-                            <td class="flex items-center justify-center px-6 py-4 whitespace-nowrap">
-                                <x-button class="mr-2"
-                                          onclick="window.location='{{ route('users.edit', ['user'=> $user->id]) }}'">
-                                    {{ __('Edit') }}
-                                </x-button>
-                                <form method="POST"
-                                      action="{{ route('users.destroy', ['user' => $user->id]) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <x-button>
-                                        {{ __('Delete') }}
-                                    </x-button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
                     </tbody>
                 </table>
             </div>
-
         </div>
     </div>
+    @push('scripts')
+        <script src="{{ asset('js/pages/users/index.js') }}" type="module"></script>
+        <script type="module">
+            const DATA = {!! json_encode($users) !!};
+            const CSRF = "{{ csrf_token() }}";
+            const EDIT_URL = "{{ route('users.edit', ['user' => ':id', 'projectId' => ':projectId']) }}";
+            const DELETE_URL = "{{ route('users.destroy', ['user' => ':id', 'projectId' => ':projectId']) }}";
+
+            renderDataTable(DATA, EDIT_URL, DELETE_URL, CSRF, {msg: {edit: '{{ __('Edit')}}', delete: '{{ __('Delete')}}'}});
+        </script>
+    @endpush
 </x-app-layout>

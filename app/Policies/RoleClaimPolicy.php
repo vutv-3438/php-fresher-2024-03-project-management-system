@@ -22,12 +22,12 @@ class RoleClaimPolicy
         $this->roleRepository = $roleRepository;
     }
 
-    public function before(User $user, string $ability, ?RoleClaim $roleClaim): bool
+    public function before(User $user, string $ability, $roleClaim): bool
     {
         $projectId = getRouteParam('projectId');
         $roleId = getRouteParam('roleId') ?? getRouteParam('role')->id;
 
-        if ($roleClaim->role->id !== +$roleId) {
+        if ($roleClaim instanceof RoleClaim && $roleClaim->role->id !== +$roleId) {
             abort(StatusCode::NOT_FOUND);
         }
 

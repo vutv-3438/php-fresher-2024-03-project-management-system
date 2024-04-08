@@ -22,12 +22,12 @@ class WorkFlowStepPolicy
         $this->workFlowRepository = $workFlowRepository;
     }
 
-    public function before(User $user, string $ability, ?WorkFlowStep $workFlowStep): bool
+    public function before(User $user, string $ability, $workFlowStep): bool
     {
         $projectId = getRouteParam('projectId');
         $workFlowId = getRouteParam('workFlowId') ?? getRouteParam('workFlow')->id;
 
-        if ($workFlowStep->workFlow->id !== +$workFlowId) {
+        if ($workFlowStep instanceof WorkFlowStep && $workFlowStep->workFlow->id !== +$workFlowId) {
             abort(StatusCode::NOT_FOUND);
         }
 

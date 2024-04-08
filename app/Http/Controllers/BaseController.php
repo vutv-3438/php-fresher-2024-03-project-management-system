@@ -6,28 +6,28 @@ use App\Common\Enums\Http\StatusCode;
 
 class BaseController extends Controller
 {
-    public static function NotFound()
+    public static function NotFound($message = '')
     {
-        return abort(StatusCode::NOT_FOUND);
+        abort(StatusCode::NOT_FOUND, $message);
     }
 
-    public static function Forbidden()
+    public static function Forbidden($message = '')
     {
-        return abort(StatusCode::FORBIDDEN);
+        abort(StatusCode::FORBIDDEN, $message);
     }
 
-    public static function UnAuthorize()
+    public static function UnAuthorize($message = '')
     {
-        return abort(StatusCode::UNANTHORIZE);
+        abort(StatusCode::UNANTHORIZE, $message);
     }
 
-    public static function Success()
+    public static function Success($message = '')
     {
-        return abort(StatusCode::SUCCESS);
+        abort(StatusCode::SUCCESS, $message);
     }
 
-    public static function ServerError()
+    public static function ServerError($message = '')
     {
-        return abort(StatusCode::SERVER_ERROR);
+        abort(StatusCode::SERVER_ERROR, $message);
     }
 }
