@@ -10,12 +10,6 @@
         </style>
     @endpush
 
-    <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="font-weight-bold text-dark mb-0 fs-4 py-2">{{ $project->name }} {{ __('project') }}</h2>
-        </div>
-    </x-slot>
-
     <div class="py-12 flex-grow-1">
         <div class="sm-6 lg-8">
             <div class="overflow-hidden fs-5">
@@ -61,12 +55,17 @@
     @push('scripts')
         <script src="{{ asset('js/pages/issues/index.js') }}" type="module"></script>
         <script type="module">
-            const DATA = {!! json_encode($issues) !!};
             const CSRF = "{{ csrf_token() }}";
-            const EDIT_URL = "{{ route('issues.edit', ['issue' => ':id', 'projectId' => ':projectId']) }}";
+            const DETAIL_URL = "{{ route('issues.show', ['issue' => ':id', 'projectId' => ':projectId']) }}";
             const DELETE_URL = "{{ route('issues.destroy', ['issue' => ':id', 'projectId' => ':projectId']) }}";
+            const GET_URL = "{{ route('issues.getAllByProjectId', ['projectId' => $project->id]) }}";
 
-            renderDataTable(DATA, EDIT_URL, DELETE_URL, CSRF, {edit: '{{ __('Edit') }}', delete: '{{ __('Delete') }}'});
+            renderDataTable(null, DETAIL_URL, DELETE_URL, CSRF, {
+                msg: {
+                    edit: '{{ __('Detail') }}', delete: '{{ __('Delete') }}'
+                },
+                getUrl: GET_URL,
+            });
         </script>
     @endpush
 </x-app-layout>
