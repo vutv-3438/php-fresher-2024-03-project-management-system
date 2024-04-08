@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -19,6 +20,7 @@ class User extends Authenticatable
     use HasApiTokens;
     use HasFactory;
     use Notifiable;
+    use SoftDeletes;
 
     private const IS_ACTIVE = 1;
     private const IS_ADMIN = 1;
@@ -61,7 +63,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $appends = ['full_name'];
+    protected $appends = ['full_name', 'is_deleted'];
 
     public function assignedIssue(): HasOne
     {
@@ -86,6 +88,11 @@ class User extends Authenticatable
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name} {$this->last_name}";
+    }
+
+    public function getIsDeletedAttribute(): bool
+    {
+        return $this->trashed();
     }
 
     public function setUserNameAttribute($value)

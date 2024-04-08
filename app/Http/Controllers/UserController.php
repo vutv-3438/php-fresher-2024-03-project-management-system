@@ -6,6 +6,8 @@ use App\Common\Enums\Action;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use App\Services\Repositories\Contracts\IUserRepository;
+use Illuminate\Http\Request;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
@@ -13,6 +15,13 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
+    private IUserRepository $userRepository;
+
+    public function __construct(IUserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -24,7 +33,7 @@ class UserController extends Controller
         $this->authorize(Action::VIEW_ANY, User::class);
 
         return view('users.index', [
-            'users' => User::all()->load('roles'),
+            'users' => User::withTrashed()->get(),
         ]);
     }
 
@@ -109,6 +118,34 @@ class UserController extends Controller
             $user->password = empty($request->password) ? $user->password : Hash::make($request->password);
             $user->phone_number = $request->phone_number;
             $user->save();
+
+            return redirect()->route('users.index')->with([
+                'type' => 'success',
+                'msg' => __('The :object has been updated', ['object' => 'user']),
+            ]);
+        } catch (\Exception $e) {
+            return back()->with([
+                'type' => 'danger',
+                'msg' => __('Something went wrong'),
+            ]);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function restore(Request $request, int $id): RedirectResponse
+    {
+        $user = $this->userRepository->findOrFail($id);
+        $this->authorize(Action::UPDATE, $user);
+
+        try {
+            $user->restore();
 
             return redirect()->route('users.index')->with([
                 'type' => 'success',

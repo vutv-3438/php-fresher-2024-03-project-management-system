@@ -64,8 +64,16 @@
             const CSRF = "{{ csrf_token() }}";
             const EDIT_URL = "{{ route('users.edit', ['user' => ':id', 'projectId' => ':projectId']) }}";
             const DELETE_URL = "{{ route('users.destroy', ['user' => ':id', 'projectId' => ':projectId']) }}";
+            const RESTORE_URL = "{{ route('users.restore', ['user' => ':id']) }}";
 
-            renderDataTable(DATA, EDIT_URL, DELETE_URL, CSRF, {msg: {edit: '{{ __('Edit')}}', delete: '{{ __('Delete')}}'}});
+            renderDataTable(DATA, EDIT_URL, DELETE_URL, CSRF, {
+                msg: {
+                    edit: '{{ __('Edit')}}',
+                    delete: '{{ __('Delete')}}',
+                    restore: '{{ __('Restore') }}'
+                },
+                restoreUrl: RESTORE_URL,
+            });
         </script>
     @endpush
 </x-app-layout>
