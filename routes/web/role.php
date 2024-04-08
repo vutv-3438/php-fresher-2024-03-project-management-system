@@ -16,4 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('projects/{projectId}')->group(function () {
     Route::resource('roles', RoleController::class);
+    Route::put('roles/{role}', [RoleController::class, 'update'])->name('roles.update');
+    Route::patch('roles/{role}', [RoleController::class, 'changeRoleDefault'])
+        ->name('roles.changeDefaultRole');
 });

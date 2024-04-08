@@ -27,11 +27,9 @@
             }
         </style>
     @endpush
-    <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="font-weight-bold text-dark mb-0 fs-4 py-2">{{ __('crud.update', ['object' => 'Issue']) }}</h2>
-        </div>
-    </x-slot>
+
+    {{-- Page navigation--}}
+    <x-slot name="navigation"></x-slot>
 
     <div class="py-12 mb-4">
         <div class="row">
@@ -107,16 +105,21 @@
                                         <label for="status">{{ __('Status') }}:</label>
                                         <span class="star-maker">*</span>
                                         <select class="form-control bg-white" id="status" name="status_id">
-                                            <option value="" disabled
-                                                {{ is_null($issue->status) ? 'selected' : '' }}>{{ __('Choose status') }}
-                                            </option>
-                                            @foreach($statuses as $index => $status)
-                                                <option
-                                                    value="{{ $status->id }}"
-                                                    {{ !is_null($issue->status) &&
-                                                    $status->id == $issue->status->id ? 'selected' : '' }}
-                                                >
+                                            @if(!is_null($issue->status))
+                                                <option value="{{ $issue->status->id }}" selected>
                                                     {{ $status->name }}
+                                                </option>
+                                            @else
+                                                <option value="" disabled
+                                                    {{ is_null($issue->status) ? 'selected' : '' }}>{{ __('Choose status') }}
+                                                </option>
+                                            @endif
+                                            @foreach($issue->status->nextStatusesAllowed as $index => $next)
+                                                @if($next->id === $issue->status->id)
+                                                    @continue
+                                                @endif
+                                                <option value="{{ $next->id }}">
+                                                    {{ $next->name }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -206,7 +209,7 @@
                                         <select class="form-control bg-white" id="progress" name="progress">
                                             @for ($i = 0; $i <= 100; $i += 10)
                                                 <option
-                                                value="{{ $i }}" {{ $issue->progress == $i ? 'selected' : '' }}
+                                                    value="{{ $i }}" {{ $issue->progress == $i ? 'selected' : '' }}
                                                 >
                                                     {{ $i }} %
                                                 </option>
@@ -251,7 +254,7 @@
                             </div>
                             <a href="{{ route('issues.create',
                                 ['projectId' => getRouteParam('projectId'), 'parentId' => getRouteParam('issue')]) }}"
-                                class="underline text-primary"
+                               class="underline text-primary"
                             >
                                 {{ __('Add sub task') }}
                             </a>

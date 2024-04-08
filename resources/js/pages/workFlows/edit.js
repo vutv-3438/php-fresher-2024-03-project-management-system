@@ -10,7 +10,13 @@ window.renderDataTable = function renderDataTable(data, editUrl, deleteUrl, csrf
             columnDefs: [{"className": "text-center", "targets": "_all"},],
             buttons: ['copy', 'excel', 'pdf'],
             columns: [
-                {data: 'id', name: 'id'},
+                {
+                    data: null,
+                    name: 'order',
+                    render: function (data, type, row, meta) {
+                        return meta.row + 1;
+                    }
+                },
                 {data: 'name', name: 'name'},
                 {
                     data: 'description',

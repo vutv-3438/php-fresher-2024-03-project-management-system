@@ -12,6 +12,7 @@ use App\Services\Repositories\Contracts\IProjectRepository;
 use App\Services\Repositories\Contracts\IRoleRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
@@ -166,5 +167,33 @@ class RoleController extends BaseController
 
             return backWithActionStatus();
         }
+    }
+
+    /**
+     * @param int $projectId
+     * @param Role $role
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function changeRoleDefault(int $projectId, Role $role): RedirectResponse
+    {
+        $this->authorize(Action::UPDATE, $role);
+
+        try {
+            $this->roleRepository->markAsDefaultRoleInTheProject($projectId, $role->id);
+
+            return redirectWithActionStatus(
+                Status::SUCCESS,
+                'roles.index',
+                Resource::ROLE,
+                Action::UPDATE,
+                ['projectId' => $projectId]
+            );
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return backWithActionStatus();
+        }
+
     }
 }

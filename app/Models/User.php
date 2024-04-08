@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -60,9 +61,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function assignedIssue(): BelongsTo
+    protected $appends = ['full_name'];
+
+    public function assignedIssue(): HasOne
     {
-        return $this->belongsTo(Issue::class, 'assignee_id', 'id');
+        return $this->hasOne(Issue::class, 'assignee_id');
     }
 
     public function reportedIssue(): BelongsTo
@@ -77,10 +80,10 @@ class User extends Authenticatable
 
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, UserRole::class);
+        return $this->belongsToMany(Role::class, UserRole::class, 'user_id', 'role_id');
     }
 
-    public function getFullNameAttribute()
+    public function getFullNameAttribute(): string
     {
         return "{$this->first_name} {$this->last_name}";
     }
@@ -93,10 +96,10 @@ class User extends Authenticatable
     /**
      * Scope a query to only admin users.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
-    public function scopeAdmin($query)
+    public function scopeAdmin(Builder $query): Builder
     {
         return $query->where('is_admin', self::IS_ADMIN);
     }
@@ -125,9 +128,9 @@ class User extends Authenticatable
         return $this->hasRoleInProject(RoleEnum::MANAGER, $projectId) ||
             $this->roles->contains(function ($role) use ($resource, $action, $projectId) {
                 return $role->project_id === $projectId && $role->roleClaims()
-                    ->where('claim_type', $resource)
-                    ->where('claim_value', $action)
-                    ->exists();
+                        ->where('claim_type', $resource)
+                        ->where('claim_value', $action)
+                        ->exists();
             });
     }
 }

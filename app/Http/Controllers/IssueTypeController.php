@@ -113,7 +113,7 @@ class IssueTypeController extends Controller
      */
     public function update(UpdateIssueTypeRequest $request, int $projectId, int $issueTypeId): RedirectResponse
     {
-        $this->authorize(Action::UPDATE, $this->issueTypeRepository->find($issueTypeId));
+        $this->authorize(Action::UPDATE, $this->issueTypeRepository->findOrFail($issueTypeId));
 
         try {
             $this->issueTypeRepository->update($request->input(), $issueTypeId);

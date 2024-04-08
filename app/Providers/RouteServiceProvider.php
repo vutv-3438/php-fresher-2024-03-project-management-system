@@ -20,6 +20,7 @@ class RouteServiceProvider extends ServiceProvider
         'issue-type',
         'log-time',
         'role-claim',
+        'member',
     ];
 
     /**

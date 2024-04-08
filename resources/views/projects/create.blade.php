@@ -28,6 +28,7 @@
                                     <label for="name"
                                            class="col-md-4 col-form-label text-md-right">
                                         {{ __('Name') }}
+                                        <span class="star-maker">*</span>
                                     </label>
 
                                     <div class="col-md-6">
@@ -45,7 +46,10 @@
 
                                 <div class="form-group row mb-4">
                                     <label for="key"
-                                           class="col-md-4 col-form-label text-md-right">{{ __('Key') }}</label>
+                                           class="col-md-4 col-form-label text-md-right">
+                                        {{ __('Key') }}
+                                        <span class="star-maker">*</span>
+                                    </label>
 
                                     <div class="col-md-6">
                                         <input id="key" type="text"
@@ -62,7 +66,10 @@
 
                                 <div class="form-group row mb-4">
                                     <label for="description"
-                                           class="col-md-4 col-form-label text-md-right">{{ __('Description') }}</label>
+                                           class="col-md-4 col-form-label text-md-right">
+                                        {{ __('Description') }}
+                                        <span class="star-maker">*</span>
+                                    </label>
 
                                     <div class="col-md-6">
                                         <textarea id="description"
@@ -79,7 +86,10 @@
 
                                 <div class="form-group row mb-4">
                                     <label for="start_date"
-                                           class="col-md-4 col-form-label text-md-right">{{ __('Start Date') }}</label>
+                                           class="col-md-4 col-form-label text-md-right">
+                                        {{ __('Start Date') }}
+                                        <span class="star-maker">*</span>
+                                    </label>
 
                                     <div class="col-md-6">
                                         <input id="start_date" type="date"
@@ -96,7 +106,10 @@
 
                                 <div class="form-group row mb-4">
                                     <label for="end_date"
-                                           class="col-md-4 col-form-label text-md-right">{{ __('End Date') }}</label>
+                                           class="col-md-4 col-form-label text-md-right">
+                                        {{ __('End Date') }}
+                                        <span class="star-maker">*</span>
+                                    </label>
 
                                     <div class="col-md-6">
                                         <input id="end_date" type="date"

@@ -39,7 +39,7 @@ class WorkFlowPolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $workFlow->project_id === $projectId &&
+        return $workFlow->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::WORK_FLOW,
@@ -73,7 +73,7 @@ class WorkFlowPolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $workFlow->project_id === $projectId &&
+        return $workFlow->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::WORK_FLOW,
@@ -88,11 +88,11 @@ class WorkFlowPolicy
      * @param WorkFlow $workFlow
      * @return bool
      */
-    public function delete(User $user, WorkFlow $workFlow)
+    public function delete(User $user, WorkFlow $workFlow): bool
     {
         $projectId = getRouteParam('projectId');
 
-        return $workFlow->project_id === $projectId &&
+        return $workFlow->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::WORK_FLOW,

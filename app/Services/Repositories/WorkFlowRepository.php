@@ -3,8 +3,10 @@
 namespace App\Services\Repositories;
 
 use App\Models\WorkFlow;
+use App\Models\WorkFlowStep;
 use App\Services\Repositories\Contracts\IWorkFlowRepository;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class WorkFlowRepository extends BaseRepository implements IWorkFlowRepository
 {
@@ -24,10 +26,19 @@ class WorkFlowRepository extends BaseRepository implements IWorkFlowRepository
 
     public function update(array $attributes, int $id): bool
     {
-        return parent::update([
-            'title' => $attributes['title'],
-            'description' => $attributes['description'],
-        ], $id);
+        DB::transaction(function () use ($attributes, $id) {
+            parent::update([
+                'title' => $attributes['title'],
+                'description' => $attributes['description'],
+            ], $id);
+
+            foreach (array_keys($attributes['next_steps']) as $currentStep) {
+                $step = WorkFlowStep::find($currentStep);
+                $step->nextStatusesAllowed()->sync($attributes['next_steps'][$currentStep]);
+            }
+        });
+
+        return true;
     }
 
     public function getWorkFlowByProjectId(int $projectId): Collection

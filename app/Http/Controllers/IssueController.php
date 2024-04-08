@@ -8,6 +8,7 @@ use App\Common\Enums\Status;
 use App\Http\Requests\StoreIssueRequest;
 use App\Http\Requests\UpdateIssueRequest;
 use App\Models\Issue;
+use App\Models\Project;
 use App\Services\Repositories\Contracts\IIssueRepository;
 use App\Services\Repositories\Contracts\IIssueTypeRepository;
 use App\Services\Repositories\Contracts\IProjectRepository;
@@ -27,12 +28,13 @@ class IssueController extends Controller
     private IUserRepository $userRepository;
 
     public function __construct(
-        IIssueRepository $issueRepository,
-        IIssueTypeRepository $issueTypeRepository,
+        IIssueRepository        $issueRepository,
+        IIssueTypeRepository    $issueTypeRepository,
         IWorkFlowStepRepository $stepRepository,
-        IProjectRepository $projectRepository,
-        IUserRepository $userRepository
-    ) {
+        IProjectRepository      $projectRepository,
+        IUserRepository         $userRepository
+    )
+    {
         $this->issueRepository = $issueRepository;
         $this->issueTypeRepository = $issueTypeRepository;
         $this->stepRepository = $stepRepository;
@@ -76,6 +78,25 @@ class IssueController extends Controller
             'statuses' => $this->stepRepository->getAllByProjectId($projectId)->get(),
             'assignees' => $this->userRepository->getAllByProjectId($projectId)->get(),
             'issues' => $this->issueRepository->getAllByProjectId($projectId)->get(),
+        ]);
+    }
+
+    /**
+     * @param Issue $issue
+     * @return View
+     */
+    public function show(int $projectId, Issue $issue): View
+    {
+        return view('issues.detail', [
+            'issue' => $issue->load([
+                'childIssues.issueType:id,name',
+                'childIssues.status:id,name',
+                'childIssues.assignee:id,first_name,last_name',
+                'issueType',
+                'status',
+                'assignee',
+                'parentIssue',
+            ])
         ]);
     }
 
@@ -126,7 +147,7 @@ class IssueController extends Controller
                 'childIssues.status:id,name',
                 'childIssues.assignee:id,first_name,last_name',
                 'issueType',
-                'status',
+                'status.nextStatusesAllowed',
                 'assignee',
                 'parentIssue',
             ]),
@@ -148,10 +169,11 @@ class IssueController extends Controller
      */
     public function update(
         UpdateIssueRequest $request,
-        int $projectId,
-        int $issueId
-    ): RedirectResponse {
-        $this->authorize(Action::UPDATE, $this->issueRepository->find($issueId));
+        int                $projectId,
+        int                $issueId
+    ): RedirectResponse
+    {
+        $this->authorize(Action::UPDATE, $this->issueRepository->findOrFail($issueId));
 
         try {
             $this->issueRepository->update($request->input(), $issueId);

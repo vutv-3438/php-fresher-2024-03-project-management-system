@@ -25,22 +25,22 @@
 </head>
 <body class="font-sans antialiased">
 <div class="min-h-screen bg-gray-100">
-    @include('layouts.navigation', ['wFull' => $wFull])
+    <!-- Page Header -->
+    @include('layouts.header', ['wFull' => $wFull])
 
-    <!-- Page Heading -->
-    @if(isset($header))
-        <header class="bg-white shadow">
-            <div class="{{ $wFull ? 'container-fluid': 'container' }}">
-                {{ $header }}
-            </div>
-        </header>
-    @endif
+    <!-- Page Navigation -->
+    <div class="bg-white shadow border-top border-top-secondary">
+        <div class="{{ $wFull ? 'container-fluid': 'container' }}">
+            @if(isset($navigation))
+                @include('layouts.navigation')
+            @endif
+        </div>
+    </div>
 
     <!-- Page Content -->
     <main class="{{$class}} {{ $wFull ? 'container-fluid': 'container' }} mt-5">
         {{ $slot }}
     </main>
-
 </div>
 @stack('scripts')
 </body>

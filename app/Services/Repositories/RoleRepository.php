@@ -18,6 +18,7 @@ class RoleRepository extends BaseRepository implements IRoleRepository
         return parent::create([
             'name' => $attributes['name'],
             'description' => $attributes['description'],
+            'project_id' => $attributes['projectId'],
         ]);
     }
 
@@ -47,5 +48,15 @@ class RoleRepository extends BaseRepository implements IRoleRepository
             ->where('id', $roleId)
             ->where('project_id', $projectId)
             ->exists();
+    }
+
+    public function markAsDefaultRoleInTheProject(int $projectId, int $roleId)
+    {
+        $this->model->where('project_id', $projectId)->update([
+            'is_default' => false,
+        ]);
+        $this->model->find($roleId)->update([
+            'is_default' => true,
+        ]);
     }
 }

@@ -8,26 +8,26 @@ class BaseController extends Controller
 {
     public static function NotFound()
     {
-        return abort(StatusCode::NOT_FOUND);
+        abort(StatusCode::NOT_FOUND);
     }
 
-    public static function Forbidden()
+    public static function Forbidden($message = '')
     {
-        return abort(StatusCode::FORBIDDEN);
+        abort(StatusCode::FORBIDDEN, $message);
     }
 
     public static function UnAuthorize()
     {
-        return abort(StatusCode::UNANTHORIZE);
+        abort(StatusCode::UNANTHORIZE);
     }
 
-    public static function Success()
+    public static function Success($message = '')
     {
-        return abort(StatusCode::SUCCESS);
+        abort(StatusCode::SUCCESS, $message);
     }
 
     public static function ServerError()
     {
-        return abort(StatusCode::SERVER_ERROR);
+        abort(StatusCode::SERVER_ERROR);
     }
 }

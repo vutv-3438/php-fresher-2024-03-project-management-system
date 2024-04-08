@@ -12,6 +12,7 @@ use App\Services\Repositories\Contracts\IProjectRepository;
 use App\Services\Repositories\Contracts\IWorkFlowRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
@@ -97,10 +98,12 @@ class WorkFlowController extends BaseController
      */
     public function edit(int $projectId, WorkFlow $workFlow): View
     {
-        $this->authorize(Action::UPDATE, WorkFlow::class);
+        $this->authorize(Action::UPDATE, $workFlow);
 
         return view('workFlows.edit', [
-            'workFlow' => $workFlow->load('workFlowSteps'),
+            'workFlow' => $workFlow->load([
+                'workFlowSteps.previousStatuses'
+            ]),
         ]);
     }
 
@@ -118,7 +121,7 @@ class WorkFlowController extends BaseController
         int $projectId,
         int $workFlowId
     ): RedirectResponse {
-        $this->authorize(Action::UPDATE, WorkFlow::class);
+        $this->authorize(Action::UPDATE, $this->flowRepository->findOrFail($workFlowId));
 
         try {
             $this->flowRepository->update($request->input(), $workFlowId);
@@ -147,7 +150,7 @@ class WorkFlowController extends BaseController
      */
     public function destroy(int $projectId, WorkFlow $workFlow): RedirectResponse
     {
-        $this->authorize(Action::DELETE, WorkFlow::class);
+        $this->authorize(Action::DELETE, $workFlow);
 
         try {
             $this->flowRepository->delete($workFlow);

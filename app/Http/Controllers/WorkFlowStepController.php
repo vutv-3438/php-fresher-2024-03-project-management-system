@@ -83,7 +83,7 @@ class WorkFlowStepController extends Controller
      */
     public function edit(int $projectId, int $workFlowId, WorkFlowStep $workFlowStep): View
     {
-        $this->authorize(Action::UPDATE, WorkFlowStep::class);
+        $this->authorize(Action::UPDATE, $workFlowStep);
 
         return view('workFlowSteps.edit', [
             'workFlowStep' => $workFlowStep,

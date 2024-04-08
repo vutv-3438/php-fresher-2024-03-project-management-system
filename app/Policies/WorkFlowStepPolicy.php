@@ -3,15 +3,36 @@
 namespace App\Policies;
 
 use App\Common\Enums\Action;
+use App\Common\Enums\Http\StatusCode;
 use App\Common\Enums\Resource;
 use App\Models\User;
 use App\Models\WorkFlowStep;
+use App\Services\Repositories\Contracts\IWorkFlowRepository;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
 class WorkFlowStepPolicy
 {
     use HandlesAuthorization;
+
+    private IWorkFlowRepository $workFlowRepository;
+
+    public function __construct(IWorkFlowRepository $workFlowRepository)
+    {
+        $this->workFlowRepository = $workFlowRepository;
+    }
+
+    public function before(User $user, string $ability, $workFlowStep): bool
+    {
+        $projectId = getRouteParam('projectId');
+        $workFlowId = getRouteParam('workFlowId') ?? getRouteParam('workFlow')->id;
+
+        if ($workFlowStep instanceof WorkFlowStep && $workFlowStep->workFlow->id !== +$workFlowId) {
+            abort(StatusCode::NOT_FOUND);
+        }
+
+        return $this->workFlowRepository->checkInProject($workFlowId, $projectId);
+    }
 
     /**
      * Determine whether the user can view any models.
@@ -39,7 +60,7 @@ class WorkFlowStepPolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $workFlowStep->workFlow->project_id === $projectId &&
+        return $workFlowStep->workFlow->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::WORK_FLOW_STEP,
@@ -73,7 +94,7 @@ class WorkFlowStepPolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $workFlowStep->workFlow()->project_id === $projectId &&
+        return $workFlowStep->workFlow->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::WORK_FLOW_STEP,
@@ -92,7 +113,7 @@ class WorkFlowStepPolicy
     {
         $projectId = getRouteParam('projectId');
 
-        return $workFlowStep->workFlow()->project_id === $projectId &&
+        return $workFlowStep->workFlow->project_id === +$projectId &&
             $user->hasPermissionInProject(
                 $projectId,
                 Resource::WORK_FLOW_STEP,

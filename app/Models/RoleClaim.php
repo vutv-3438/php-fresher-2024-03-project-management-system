@@ -10,6 +10,8 @@ class RoleClaim extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);

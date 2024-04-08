@@ -11,4 +11,6 @@ interface IRoleRepository extends IBaseRepository
     public function create(array $attributes): Role;
 
     public function checkRoleInProject(int $roleId, $projectId): bool;
+
+    public function markAsDefaultRoleInTheProject(int $projectId, int $roleId);
 }
