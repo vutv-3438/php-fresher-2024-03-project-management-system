@@ -128,9 +128,9 @@ class User extends Authenticatable
         return $this->hasRoleInProject(RoleEnum::MANAGER, $projectId) ||
             $this->roles->contains(function ($role) use ($resource, $action, $projectId) {
                 return $role->project_id === $projectId && $role->roleClaims()
-                    ->where('claim_type', $resource)
-                    ->where('claim_value', $action)
-                    ->exists();
+                        ->where('claim_type', $resource)
+                        ->where('claim_value', $action)
+                        ->exists();
             });
     }
 }

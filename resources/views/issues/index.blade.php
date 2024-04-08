@@ -10,12 +10,6 @@
         </style>
     @endpush
 
-    <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="font-weight-bold text-dark mb-0 fs-4 py-2">{{ $project->name }} {{ __('project') }}</h2>
-        </div>
-    </x-slot>
-
     <div class="py-12 flex-grow-1">
         <div class="sm-6 lg-8">
             <div class="overflow-hidden fs-5">

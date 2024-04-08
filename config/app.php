@@ -234,6 +234,7 @@ return [
         'Resource' => \App\Common\Enums\Resource::class,
         'Action' => \App\Common\Enums\Action::class,
         'Role' => \App\Common\Enums\Role::class,
+        'Status' => \App\Common\Enums\Status::class,
 
     ],
 

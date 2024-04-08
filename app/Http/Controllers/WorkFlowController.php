@@ -12,6 +12,7 @@ use App\Services\Repositories\Contracts\IProjectRepository;
 use App\Services\Repositories\Contracts\IWorkFlowRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
@@ -100,7 +101,9 @@ class WorkFlowController extends BaseController
         $this->authorize(Action::UPDATE, $workFlow);
 
         return view('workFlows.edit', [
-            'workFlow' => $workFlow->load('workFlowSteps'),
+            'workFlow' => $workFlow->load([
+                'workFlowSteps.previousStatuses'
+            ]),
         ]);
     }
 

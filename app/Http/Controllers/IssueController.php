@@ -80,6 +80,25 @@ class IssueController extends Controller
     }
 
     /**
+     * @param Issue $issue
+     * @return View
+     */
+    public function show(int $projectId, Issue $issue): View
+    {
+        return view('issues.detail', [
+            'issue' => $issue->load([
+                'childIssues.issueType:id,name',
+                'childIssues.status:id,name',
+                'childIssues.assignee:id,first_name,last_name',
+                'issueType',
+                'status',
+                'assignee',
+                'parentIssue',
+            ])
+        ]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param StoreIssueRequest $request
@@ -126,7 +145,7 @@ class IssueController extends Controller
                 'childIssues.status:id,name',
                 'childIssues.assignee:id,first_name,last_name',
                 'issueType',
-                'status',
+                'status.nextStatusesAllowed',
                 'assignee',
                 'parentIssue',
             ]),

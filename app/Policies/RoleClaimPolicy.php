@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Common\Enums\Action;
 use App\Common\Enums\Http\StatusCode;
 use App\Common\Enums\Resource;
+use App\Models\Role;
 use App\Models\RoleClaim;
 use App\Models\User;
 use App\Services\Repositories\Contracts\IRoleRepository;
