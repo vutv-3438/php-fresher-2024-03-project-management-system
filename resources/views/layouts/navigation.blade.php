@@ -1,73 +1,68 @@
-<nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-    <div class="{{ $wFull ? 'container-fluid': 'container' }}">
-        <a class="navbar-brand" href="{{ url('/') }}">
-            {{ config('app.name', 'Project Management') }}
-        </a>
-        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-            <x-nav-link :href="route('language.change', ['lang' => 'vi'])"
-                        :active="request()->routeIs('language.change')">
-                {{ __('VI') }}
-            </x-nav-link>
-        </div>
-        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-            <x-nav-link :href="route('language.change', ['lang' => 'en'])"
-                        :active="request()->routeIs('language.change')">
-                {{ __('EN') }}
-            </x-nav-link>
-        </div>
-        <button class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="{{ __('Toggle navigation') }}"
-        >
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<div class="navbar navbar-expand-md navbar-light bg-white" id="navbarSupportedContent">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="#">{{ __('Projects') }}</a>
+        </li>
+        @can(Action::VIEW_ANY, \App\Models\Issue::class)
+            <li class="nav-item">
+                <a
+                    class="nav-link"
+                    href="{{ route('issues.index', ['projectId' => $project->id]) }}"
+                >
+                    {{ __('Issues') }}
+                </a>
+            </li>
+        @endcan
+        @can(Action::VIEW_ANY, \App\Models\WorkFlow::class)
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <!-- Left Side Of Navbar -->
-            <ul class="navbar-nav me-auto">
-
-            </ul>
-
-            <!-- Right Side Of Navbar -->
-            <ul class="navbar-nav ms-auto">
-                <!-- Authentication Links -->
-                @guest
-                    @if (Route::has('login'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                        </li>
-                    @endif
-
-                    @if (Route::has('register'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                        </li>
-                    @endif
-                @else
-                    <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            {{ Auth::user()->full_name }}
-                        </a>
-
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('logout') }}"
-                               onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                {{ __('Logout') }}
-                            </a>
-
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                @csrf
-                            </form>
-                        </div>
-                    </li>
-                @endguest
-            </ul>
-        </div>
-    </div>
-</nav>
+            <li class="nav-item">
+                <a
+                    class="nav-link"
+                    href="{{ route('workFlows.index', ['projectId' => $project->id]) }}"
+                >
+                    {{ __('Work flows') }}
+                </a>
+            </li>
+        @endcan
+        @can(Action::VIEW_ANY, \App\Models\Role::class)
+            <li class="nav-item">
+                <a
+                    class="nav-link"
+                    href="{{ route('roles.index', ['projectId' => $project->id]) }}"
+                >
+                    {{ __('Roles') }}
+                </a>
+            </li>
+        @endcan
+        @can(Action::VIEW_ANY, \App\Models\IssueType::class)
+            <li class="nav-item">
+                <a
+                    class="nav-link"
+                    href="{{ route('issueTypes.index', ['projectId' => $project->id]) }}"
+                >
+                    {{ __('Issue types') }}
+                </a>
+            </li>
+        @endcan
+        @can(Action::VIEW_ANY, \App\Models\LogTime::class)
+            <li class="nav-item">
+                <a
+                    class="nav-link"
+                    href="{{ route('logTimes.index', ['projectId' => $project->id]) }}"
+                >
+                    {{ __('Log times') }}
+                </a>
+            </li>
+        @endcan
+        @can(Action::VIEW_ANY, \App\Models\Member::class)
+            <li class="nav-item">
+                <a
+                    class="nav-link"
+                    href="{{ route('members.index', ['projectId' => $project->id]) }}"
+                >
+                    {{ __('Members') }}
+                </a>
+            </li>
+        @endcan
+    </ul>
+</div>

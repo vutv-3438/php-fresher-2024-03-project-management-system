@@ -1,12 +1,7 @@
 @if(isset($project))
     <x-app-layout>
-        <x-slot name="header">
-            <div class="d-flex justify-content-between align-items-center">
-                <h2 class="font-weight-bold text-dark mb-0 fs-4 py-2">
-                    {{ __('crud.create', ['object' => 'Project']) }}
-                </h2>
-            </div>
-        </x-slot>
+        {{-- Page navigation--}}
+        <x-slot name="navigation"></x-slot>
 
         <div class="py-12">
             <div class="container">
@@ -22,7 +17,7 @@
                                     <x-alert type="danger" :message="session('msg')"/>
                                 @endif
 
-                                <form action="{{ route('projects.update', ['id' => $project->id]) }}" method="POST">
+                                <form action="{{ route('projects.update', ['projectId' => $project->id]) }}" method="POST">
                                     @csrf
                                     @method('PUT')
 
