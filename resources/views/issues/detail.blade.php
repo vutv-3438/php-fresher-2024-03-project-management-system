@@ -18,7 +18,7 @@
                                     href="{{ route('issues.show',
                                     [
                                         'projectId' => $project->id,
-                                        'issue' => $issue->parentIssue->id
+                                        'issue' => $issue->parentIssue->id,
                                     ]) }}"
                                 >
                                     {{ $issue->parentIssue->issueType ? $issue->parentIssue->issueType->name: '' }} #{{ $issue->parentIssue->id }}:
