@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Issue;
 use App\Models\IssueType;
 use App\Models\LogTime;
+use App\Models\Member;
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\RoleClaim;
@@ -14,6 +15,7 @@ use App\Models\WorkFlowStep;
 use App\Policies\IssuePolicy;
 use App\Policies\IssueTypePolicy;
 use App\Policies\LogTimePolicy;
+use App\Policies\MemberPolicy;
 use App\Policies\ProjectPolicy;
 use App\Policies\RoleClaimPolicy;
 use App\Policies\RolePolicy;
@@ -40,6 +42,7 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         WorkFlow::class => WorkFlowPolicy::class,
         WorkFlowStep::class => WorkFlowStepPolicy::class,
+        Member::class => MemberPolicy::class,
     ];
 
     /**
