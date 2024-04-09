@@ -15,5 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('projects/{projectId}')->group(function () {
+    Route::get('issues/getAllByProjectId', [IssueController::class, 'getAllByProjectId'])
+        ->name('issues.getAllByProjectId');
     Route::resource('issues', IssueController::class);
 });
