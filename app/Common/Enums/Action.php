@@ -14,6 +14,8 @@ class Action
     public const VIEW_ANY = 'viewAny';
     public const RESTORE = 'restore';
     public const FORCE_DELETE = 'forceDelete';
+    public const LOCK = 'lock';
+    public const UNLOCK = 'unlock';
     public const MEANINGS = [
         self::CREATE => 'Create new resource in the current project',
         self::UPDATE => 'Update the specific resource in the current project',
@@ -28,6 +30,6 @@ class Action
     {
         $currentClass = new ReflectionClass(self::class);
 
-        return Arr::except($currentClass->getConstants(), ['MEANINGS']);
+        return Arr::except($currentClass->getConstants(), ['MEANINGS', 'LOCK', 'UNLOCK']);
     }
 }

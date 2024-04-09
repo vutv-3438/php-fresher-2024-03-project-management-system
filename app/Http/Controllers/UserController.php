@@ -3,16 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Common\Enums\Action;
+use App\Common\Enums\Resource;
+use App\Common\Enums\Status;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use App\Services\Repositories\Contracts\IUserRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class UserController extends Controller
 {
+    private IUserRepository $userRepository;
+
+    public function __construct(IUserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -24,7 +36,7 @@ class UserController extends Controller
         $this->authorize(Action::VIEW_ANY, User::class);
 
         return view('users.index', [
-            'users' => User::all()->load('roles'),
+            'users' => User::withTrashed()->get(),
         ]);
     }
 
@@ -61,27 +73,29 @@ class UserController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-            return redirect()->route('users.index')->with([
-                'type' => 'success',
-                'msg' => __('The :object has been created', ['object' => 'user']),
-            ]);
+            return redirectWithActionStatus(
+                Status::SUCCESS,
+                'users.index',
+                Resource::USER,
+                Action::CREATE,
+            );
         } catch (\Exception $e) {
-            return back()->with([
-                'type' => 'danger',
-                'msg' => __('Something went wrong'),
-            ]);
+            Log::error($e->getMessage());
+
+            return backWithActionStatus();
         }
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param User $user
+     * @param int $id
      * @return View
      * @throws AuthorizationException
      */
-    public function edit(User $user): View
+    public function edit(int $id): View
     {
+        $user = $this->userRepository->findOrFail($id);
         $this->authorize(Action::UPDATE, $user);
 
         return view('users.edit', [
@@ -93,12 +107,13 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param UpdateUserRequest $request
-     * @param User $user
+     * @param int $id
      * @return RedirectResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    public function update(UpdateUserRequest $request, int $id): RedirectResponse
     {
+        $user = $this->userRepository->findOrFail($id);
         $this->authorize(Action::UPDATE, $user);
 
         try {
@@ -110,27 +125,88 @@ class UserController extends Controller
             $user->phone_number = $request->phone_number;
             $user->save();
 
-            return redirect()->route('users.index')->with([
-                'type' => 'success',
-                'msg' => __('The :object has been updated', ['object' => 'user']),
-            ]);
+            return redirectWithActionStatus(
+                Status::SUCCESS,
+                'users.index',
+                Resource::USER,
+                Action::UPDATE,
+            );
         } catch (\Exception $e) {
-            return back()->with([
-                'type' => 'danger',
-                'msg' => __('Something went wrong'),
-            ]);
+            Log::error($e->getMessage());
+
+            return backWithActionStatus();
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function restore(Request $request, int $id): RedirectResponse
+    {
+        $user = $this->userRepository->findOrFail($id);
+        $this->authorize(Action::UPDATE, $user);
+
+        try {
+            $user->restore();
+
+            return redirectWithActionStatus(
+                Status::SUCCESS,
+                'users.index',
+                Resource::USER,
+                Action::RESTORE,
+            );
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return backWithActionStatus();
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function toggleLock(Request $request, int $id): RedirectResponse
+    {
+        $user = $this->userRepository->findOrFail($id);
+        $this->authorize(Action::UPDATE, $user);
+
+        try {
+            $user->is_locked = !$user->is_locked;
+            $user->save();
+
+            return redirectWithActionStatus(
+                Status::SUCCESS,
+                'users.index',
+                Resource::USER,
+                $user->is_locked ? Action::LOCK : Action::UNLOCK,
+            );
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return backWithActionStatus();
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param User $user
+     * @param int $id
      * @return RedirectResponse
      * @throws AuthorizationException
      */
-    public function destroy(User $user): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
+        $user = $this->userRepository->findOrFail($id);
         $this->authorize(Action::DELETE, $user);
 
         try {

@@ -65,7 +65,7 @@
 
 <div class="container mt-5">
     <header class="jumbotron">
-        <h1 class="display-4">Welcome to Project Management</h1>
+        <h1 class="display-4 text-bold fs-1">Welcome to Project Management</h1>
         <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at odio nec lacus vestibulum
             dignissim. Integer nec velit risus. Suspendisse potenti.</p>
         <a class="btn btn-primary btn-lg" href="#" role="button">Get Started!</a>

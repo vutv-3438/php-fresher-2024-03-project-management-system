@@ -6,6 +6,9 @@
                     <div class="card-header">{{ __('Login') }}</div>
 
                     <div class="card-body">
+                        @if (session('type') && session('msg'))
+                            <x-alert type="danger" :message="session('msg')"/>
+                        @endif
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
 
