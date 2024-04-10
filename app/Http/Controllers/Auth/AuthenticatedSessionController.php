@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Common\Enums\Action;
+use App\Common\Enums\Resource;
+use App\Common\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
@@ -29,6 +32,16 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         $request->authenticate();
+        if (Auth::user()->is_locked) {
+            Auth::guard('web')->logout();
+
+            return redirectWithActionStatus(
+                Status::DANGER,
+                'login',
+                Resource::USER,
+                Action::LOCK
+            );
+        }
 
         $request->session()->regenerate();
 

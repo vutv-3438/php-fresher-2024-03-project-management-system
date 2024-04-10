@@ -3,7 +3,6 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\LanguageController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,10 +21,6 @@ Route::get('/', [LandingPageController::class, 'landingPage']);
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])
     ->middleware(['auth'])
     ->name('dashboard');
-
-Route::resource('users', UserController::class)
-    ->middleware('admin')
-    ->except(['show']);
 
 Route::get('language/{lang}', [LanguageController::class, 'changeLanguage'])
     ->name('language.change');

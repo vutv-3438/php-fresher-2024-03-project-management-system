@@ -21,6 +21,7 @@ class RouteServiceProvider extends ServiceProvider
         'log-time',
         'role-claim',
         'member',
+        'user',
     ];
 
     /**
