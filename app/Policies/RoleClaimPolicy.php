@@ -3,13 +3,13 @@
 namespace App\Policies;
 
 use App\Common\Enums\Action;
-use App\Common\Enums\Http\StatusCode;
 use App\Common\Enums\Resource;
 use App\Models\RoleClaim;
 use App\Models\User;
 use App\Services\Repositories\Contracts\IRoleRepository;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class RoleClaimPolicy
 {
@@ -28,7 +28,7 @@ class RoleClaimPolicy
         $roleId = getRouteParam('roleId') ?? getRouteParam('role')->id;
 
         if ($roleClaim instanceof RoleClaim && $roleClaim->role->id !== +$roleId) {
-            abort(StatusCode::NOT_FOUND);
+            abort(HttpResponse::HTTP_NOT_FOUND);
         }
 
         return $this->roleRepository->checkInProject($roleId, $projectId);

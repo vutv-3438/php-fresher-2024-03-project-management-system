@@ -2,32 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Common\Enums\Http\StatusCode;
+use Symfony\Component\HttpFoundation\Response;
 
 class BaseController extends Controller
 {
     public static function NotFound($message = '')
     {
-        abort(StatusCode::NOT_FOUND, $message);
+        abort(Response::HTTP_NOT_FOUND, $message);
     }
 
     public static function Forbidden($message = '')
     {
-        abort(StatusCode::FORBIDDEN, $message);
+        abort(Response::HTTP_FORBIDDEN, $message);
     }
 
     public static function UnAuthorize($message = '')
     {
-        abort(StatusCode::UNANTHORIZE, $message);
+        abort(Response::HTTP_UNAUTHORIZED, $message);
     }
 
     public static function Success($message = '')
     {
-        abort(StatusCode::SUCCESS, $message);
+        abort(Response::HTTP_OK, $message);
     }
 
     public static function ServerError($message = '')
     {
-        abort(StatusCode::SERVER_ERROR, $message);
+        abort(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
     }
 }

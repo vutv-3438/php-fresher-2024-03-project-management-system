@@ -1,6 +1,3 @@
-export USER_ID=$(id -u)
-export GROUP_ID=$(id -g)
-
 docker-compose build --build-arg UID=$(id -u) --build-arg GID=$(id -g) app
 
 if [ $? -eq 0 ]; then

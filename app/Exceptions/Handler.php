@@ -38,4 +38,13 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof \Exception && $request->expectsJson()) {
+            return ApiExceptionHandler::handleException($exception);
+        }
+
+        return parent::render($request, $exception);
+    }
 }
