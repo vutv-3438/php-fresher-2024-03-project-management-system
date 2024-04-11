@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
+    private array $apiV1RouteFiles = [
+        'issue',
+        'user',
+    ];
+
     private array $webRouteFiles = [
         'main',
         'project',
@@ -52,19 +57,8 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
-            Route::prefix('api')
-                ->middleware('api')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/api.php'));
-
-            Route::middleware('web')
-                ->namespace($this->namespace)
-                ->group(function () {
-                    foreach ($this->webRouteFiles as $file) {
-                        $routePath = base_path("routes/web/{$file}.php");
-                        Route::group([], $routePath);
-                    }
-                });
+            $this->configureApiV1Routes();
+            $this->configureWebRoutes();
         });
     }
 
@@ -78,5 +72,31 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
         });
+    }
+
+    protected function configureApiV1Routes()
+    {
+        Route::prefix('api/v1')
+            ->middleware(['api', 'auth:api'])
+            ->namespace($this->namespace)
+            ->name('api.')
+            ->group(function () {
+                foreach ($this->apiV1RouteFiles as $file) {
+                    $routePath = base_path("routes/api/v1/{$file}.php");
+                    Route::group([], $routePath);
+                }
+            });
+    }
+
+    protected function configureWebRoutes()
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(function () {
+                foreach ($this->webRouteFiles as $file) {
+                    $routePath = base_path("routes/web/{$file}.php");
+                    Route::group([], $routePath);
+                }
+            });
     }
 }

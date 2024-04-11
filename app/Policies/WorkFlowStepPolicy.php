@@ -3,13 +3,13 @@
 namespace App\Policies;
 
 use App\Common\Enums\Action;
-use App\Common\Enums\Http\StatusCode;
 use App\Common\Enums\Resource;
 use App\Models\User;
 use App\Models\WorkFlowStep;
 use App\Services\Repositories\Contracts\IWorkFlowRepository;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class WorkFlowStepPolicy
 {
@@ -28,7 +28,7 @@ class WorkFlowStepPolicy
         $workFlowId = getRouteParam('workFlowId') ?? getRouteParam('workFlow')->id;
 
         if ($workFlowStep instanceof WorkFlowStep && $workFlowStep->workFlow->id !== +$workFlowId) {
-            abort(StatusCode::NOT_FOUND);
+            abort(HttpResponse::HTTP_NOT_FOUND);
         }
 
         return $this->workFlowRepository->checkInProject($workFlowId, $projectId);

@@ -23,6 +23,7 @@ use App\Policies\UserPolicy;
 use App\Policies\WorkFlowPolicy;
 use App\Policies\WorkFlowStepPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -54,6 +55,19 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        $this->registerPassport();
+    }
+
+    private function registerPassport()
+    {
+        // Create routes for oauth
+        if (! $this->app->routesAreCached()) {
+            Passport::routes();
+        }
+
+        // Token life-time
+        Passport::tokensExpireIn(now()->addDays(15));
+        Passport::refreshTokensExpireIn(now()->addDays(30));
+        Passport::personalAccessTokensExpireIn(now()->addMonths(6));
     }
 }
