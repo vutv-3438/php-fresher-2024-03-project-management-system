@@ -2,10 +2,13 @@
 
 namespace App\Common\Enums;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use ReflectionClass;
 
 class Role
 {
+    use HasFactory;
+
     public const MANAGER = 'MANAGER';
     public const MEMBER = 'MEMBER';
 

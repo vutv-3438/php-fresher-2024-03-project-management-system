@@ -18,7 +18,7 @@ interface IBaseRepository
 
     public function findOrFail(int $id): Model;
 
-    public function getAllByProjectId(int $projectId, array $relations = []): Builder;
+    public function getAllByProjectId(int $projectId, array $relations = []);
 
     public function checkInProject(int $id, int $projectId): bool;
 }

@@ -42,6 +42,11 @@
         {{ $slot }}
     </main>
 </div>
+<script>
+    window.e = {
+            e: '{{ __('a') }}',
+        };
+</script>
 @stack('scripts')
 </body>
 </html>

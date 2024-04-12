@@ -62,18 +62,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_locked' => 'boolean',
+        'id' => 'int',
+        'deleted_at' => 'datetime',
     ];
 
     protected $appends = ['full_name', 'is_deleted'];
 
-    public function assignedIssue(): HasOne
+    public function assignedIssues(): HasMany
     {
-        return $this->hasOne(Issue::class, 'assignee_id');
+        return $this->hasMany(Issue::class, 'assignee_id');
     }
 
-    public function reportedIssue(): BelongsTo
+    public function reportedIssues(): HasMany
     {
-        return $this->belongsTo(Issue::class, 'reporter_id', 'id');
+        return $this->hasMany(Issue::class, 'reporter_id');
     }
 
     public function userRoles(): HasMany
