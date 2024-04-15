@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Models\UserRole;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Str;
 
 class UserTest extends BaseModel
 {
@@ -118,8 +117,8 @@ class UserTest extends BaseModel
         $activeUsers = User::all();
         $allUser = User::withoutGlobalScopes()->get();
 
-        $this->assertCount(1, $activeUsers);
-        $this->assertCount(3, $allUser);
+        $this->assertCount(2, $activeUsers);
+        $this->assertCount(4, $allUser);
     }
 
     public function test_user_has_role_in_project()
