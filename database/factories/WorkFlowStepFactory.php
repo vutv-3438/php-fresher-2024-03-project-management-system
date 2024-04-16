@@ -4,26 +4,27 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class IssueTypeFactory extends Factory
+class WorkFlowStepFactory extends Factory
 {
     /**
      * Define the model's default state.
      *
      * @return array
      */
-    public function definition(): array
+    public function definition()
     {
         return [
-            'name' => $this->faker->name,
+            'name' => $this->faker->text,
             'description' => $this->faker->text,
-            'project_id' => 1,
+            'work_flow_id' => null,
+            'order' => 1,
         ];
     }
 
-    public function withProject(int $id): IssueTypeFactory
+    public function withWorkFlow(int $id): WorkFlowStepFactory
     {
         return $this->state([
-            'project_id' => $id,
+            'work_flow_id' => $id,
         ]);
     }
 }

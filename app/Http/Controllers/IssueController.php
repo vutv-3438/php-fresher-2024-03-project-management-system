@@ -103,6 +103,8 @@ class IssueController extends Controller
 
     public function show(int $projectId, Issue $issue): View
     {
+        $this->authorize(Action::VIEW, $issue);
+
         return view('issues.detail', [
             'issue' => $issue->load([
                 'childIssues.issueType:id,name',
