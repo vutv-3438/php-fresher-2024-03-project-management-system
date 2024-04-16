@@ -12,6 +12,8 @@ services:
             - ../:/var/www
         networks:
             - demo
+        extra_hosts:
+            - host.docker.internal:host-gateway
 
     db:
         image: mysql:8.0
@@ -48,6 +50,19 @@ services:
         volumes:
             - ../:/var/www
             - ./nginx:/etc/nginx/conf.d/
+        networks:
+            - demo
+
+    selenium:
+        image: 'selenium/standalone-chrome'
+        container_name: demo-selenium
+        volumes:
+            - '/dev/shm:/dev/shm'
+        ports:
+            - "4444:4444"
+            - "7900:7900"
+        depends_on:
+            - nginx
         networks:
             - demo
 
