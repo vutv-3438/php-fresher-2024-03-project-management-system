@@ -16,7 +16,7 @@ class StoreWorkFlowRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'projectId' => ['required', 'int', Rule::exists('projects', 'id')],
+            'projectId' => ['required', 'integer', Rule::exists('projects', 'id')],
         ];
     }
 }

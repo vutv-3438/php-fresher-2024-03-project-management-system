@@ -18,7 +18,7 @@ class StoreRoleRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', new CheckDuplicateInProject(Role::class)],
-            'projectId' => ['required', 'int', Rule::exists('projects', 'id')],
+            'projectId' => ['required', 'integer', Rule::exists('projects', 'id')],
         ];
     }
 }
