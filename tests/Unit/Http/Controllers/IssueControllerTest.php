@@ -13,6 +13,7 @@ use App\Services\Repositories\Contracts\IIssueRepository;
 use App\Services\Repositories\Contracts\IIssueTypeRepository;
 use App\Services\Repositories\Contracts\IUserRepository;
 use App\Services\Repositories\Contracts\IWorkFlowStepRepository;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -37,6 +38,7 @@ class IssueControllerTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $this->afterApplicationCreated(function () {
             $this->issueRepository = Mockery::mock(IIssueRepository::class)->makePartial();
             $this->issueTypeRepository = Mockery::mock(IIssueTypeRepository::class)->makePartial();
@@ -53,7 +55,6 @@ class IssueControllerTest extends TestCase
             $this->queryBuilderMock = Mockery::mock('Illuminate\Database\Query\Builder');
             $this->app->instance(Builder::class, $this->queryBuilderMock);
         });
-        parent::setUp();
     }
 
     protected function tearDown(): void
@@ -63,7 +64,7 @@ class IssueControllerTest extends TestCase
         parent::tearDown();
     }
 
-    public function test_index()
+    public function test_index_success()
     {
         $this->gateMock
             ->shouldReceive('authorize')
@@ -74,7 +75,21 @@ class IssueControllerTest extends TestCase
         $this->assertEquals('issues.index', $view->getName());
     }
 
-    public function test_get_project_by_project_id()
+    /**
+     * @throws AuthorizationException
+     */
+    public function test_index_fail()
+    {
+        $this->gateMock
+            ->shouldReceive('authorize')
+            ->with(Action::VIEW_ANY, Issue::class)
+            ->once()
+            ->andThrow(new AuthorizationException());
+        $this->expectException(AuthorizationException::class);
+        $this->issueController->index(1);
+    }
+
+    public function test_get_project_by_project_id_success()
     {
         $this->gateMock
             ->shouldReceive('authorize')
@@ -119,7 +134,24 @@ class IssueControllerTest extends TestCase
         $this->assertEquals($expectedIssues->toArray(), $responseData['issues']);
     }
 
-    public function test_create()
+    public function test_get_project_by_project_id_fail()
+    {
+        $this->gateMock
+            ->shouldReceive('authorize')
+            ->with(Action::VIEW_ANY, Issue::class)
+            ->once()
+            ->andThrow(new AuthorizationException());
+        $draw = 1;
+        $start = 0;
+        $length = 10;
+        $totalRecords = 20;
+        $this->expectException(AuthorizationException::class);
+        $project = Project::factory()->create();
+        $request = new Request(['draw' => $draw, 'start' => $start, 'length' => $length]);
+        $this->issueController->getAllByProjectId($request, $project->id);
+    }
+
+    public function test_create_success()
     {
         $projectId = 1;
         $this->gateMock
@@ -156,7 +188,21 @@ class IssueControllerTest extends TestCase
         $this->assertEquals('issues.create', $view->getName());
     }
 
-    public function test_show()
+    /**
+     * @throws AuthorizationException
+     */
+    public function test_create_fail()
+    {
+        $this->gateMock
+            ->shouldReceive('authorize')
+            ->with(Action::CREATE, Issue::class)
+            ->once()
+            ->andThrow(new AuthorizationException());
+        $this->expectException(AuthorizationException::class);
+        $this->issueController->create(1);
+    }
+
+    public function test_show_success()
     {
         $projectId = 1;
         $this->gateMock
@@ -179,7 +225,21 @@ class IssueControllerTest extends TestCase
         $this->assertEquals('issues.detail', $view->getName());
     }
 
-    public function test_store()
+    /**
+     * @throws AuthorizationException
+     */
+    public function test_show_fail()
+    {
+        $this->gateMock
+            ->shouldReceive('authorize')
+            ->with(Action::VIEW, Issue::class)
+            ->once()
+            ->andThrow(new AuthorizationException());
+        $this->expectException(AuthorizationException::class);
+        $this->issueController->show(1, new Issue());
+    }
+
+    public function test_store_success()
     {
         $projectId = 1;
         $request = new StoreIssueRequest();
@@ -207,7 +267,37 @@ class IssueControllerTest extends TestCase
         $this->assertEquals(Status::DANGER, $response->getSession()->get('type'));
     }
 
-    public function test_edit()
+    public function test_store_auth_fail()
+    {
+        $this->gateMock
+            ->shouldReceive('authorize')
+            ->with(Action::CREATE, Issue::class)
+            ->once()
+            ->andThrow(new AuthorizationException());
+        $this->expectException(AuthorizationException::class);
+        $this->issueController->store(new StoreIssueRequest(), 1);
+    }
+
+    public function test_store_create_fail()
+    {
+        $projectId = 1;
+        $request = new StoreIssueRequest();
+        $this->gateMock
+            ->shouldReceive('authorize')
+            ->with(Action::CREATE, Issue::class)
+            ->andReturn(true);
+
+        $this->issueRepository
+            ->shouldReceive('create')
+            ->with($request->input())
+            ->once()
+            ->andThrow(new PDOException());
+        $response = $this->issueController->store($request, $projectId);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertEquals(Status::DANGER, $response->getSession()->get('type'));
+    }
+
+    public function test_edit_success()
     {
         $projectId = 1;
         $this->gateMock
@@ -254,7 +344,68 @@ class IssueControllerTest extends TestCase
         $this->assertEquals('issues.edit', $view->getName());
     }
 
-    public function test_update()
+    /**
+     * @throws AuthorizationException
+     */
+    public function test_edit_fail()
+    {
+        $this->gateMock
+            ->shouldReceive('authorize')
+            ->with(Action::UPDATE, Issue::class)
+            ->once()
+            ->andThrow(new AuthorizationException());
+        $this->expectException(AuthorizationException::class);
+        $this->issueController->edit(1, new Issue());
+    }
+
+    /**
+     * @throws AuthorizationException
+     */
+    public function test_update_auth_fail()
+    {
+        $issue = Mockery::mock(Issue::class);
+        $this->issueRepository
+            ->shouldReceive('findOrFail')
+            ->with(1)
+            ->andReturn($issue);
+        $this->gateMock
+            ->shouldReceive('authorize')
+            ->with(Action::UPDATE, $issue)
+            ->once()
+            ->andThrow(new AuthorizationException());
+
+        $this->expectException(AuthorizationException::class);
+        $this->issueController->update(new UpdateIssueRequest(), 1, 1);
+    }
+
+    /**
+     * @throws AuthorizationException
+     */
+    public function test_update_sql_fail()
+    {
+        $issue = Mockery::mock(Issue::class);
+        $request = new UpdateIssueRequest();
+        $this->issueRepository
+            ->shouldReceive('findOrFail')
+            ->with(1)
+            ->andReturn($issue);
+        $this->gateMock
+            ->shouldReceive('authorize')
+            ->with(Action::UPDATE, $issue)
+            ->once()
+            ->andReturnTrue();
+        $this->issueRepository
+            ->shouldReceive('update')
+            ->with($request->input(), 1)
+            ->once()
+            ->andThrow(new PDOException());
+
+        $response = $this->issueController->update(new UpdateIssueRequest(), 1, 1);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertEquals(Status::DANGER, $response->getSession()->get('type'));
+    }
+
+    public function test_update_success()
     {
         $projectId = 1;
         $issueId = 1;
@@ -288,7 +439,7 @@ class IssueControllerTest extends TestCase
         $this->assertEquals(Status::DANGER, $response->getSession()->get('type'));
     }
 
-    public function test_delete()
+    public function test_destroy_success()
     {
         $projectId = 1;
         $issue = Mockery::mock(Issue::class);
@@ -305,13 +456,37 @@ class IssueControllerTest extends TestCase
         $response = $this->issueController->destroy($projectId, $issue);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals(Status::SUCCESS, $response->getSession()->get('type'));
+    }
+
+    public function test_destroy_auth_fail()
+    {
+        $projectId = 1;
+        $issue = Mockery::mock(Issue::class);
+        $this->gateMock
+            ->shouldReceive('authorize')
+            ->with(Action::DELETE, $issue)
+            ->andThrow(new AuthorizationException());
+
+        $this->expectException(AuthorizationException::class);
+        $this->issueController->destroy($projectId, $issue);
+    }
+
+    public function test_destroy_sql_fail()
+    {
+        $projectId = 1;
+        $issue = Mockery::mock(Issue::class);
+        $this->gateMock
+            ->shouldReceive('authorize')
+            ->with(Action::DELETE, $issue)
+            ->andReturn(true);
 
         $this->issueRepository
             ->shouldReceive('delete')
             ->with($issue)
             ->once()
-            ->andThrow(new PDOException);
+            ->andThrow(new PDOException());
         $response = $this->issueController->destroy($projectId, $issue);
+
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals(Status::DANGER, $response->getSession()->get('type'));
     }

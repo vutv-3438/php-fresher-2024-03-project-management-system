@@ -117,8 +117,8 @@ class UserTest extends BaseModel
         $activeUsers = User::all();
         $allUser = User::withoutGlobalScopes()->get();
 
-        $this->assertCount(2, $activeUsers);
-        $this->assertCount(4, $allUser);
+        $this->assertCount(1, $activeUsers);
+        $this->assertCount(3, $allUser);
     }
 
     public function test_user_has_role_in_project()
@@ -131,8 +131,10 @@ class UserTest extends BaseModel
             'name' => $roleName,
             'project_id' => $project->id,
         ]);
+        $testRole = 'test role';
 
         $this->assertTrue($user->hasRoleInProject($roleName, $project->id));
+        $this->assertFalse($user->hasRoleInProject($testRole, $project->id));
     }
 
     public function test_user_has_permission_in_project()

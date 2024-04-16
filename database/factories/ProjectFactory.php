@@ -13,7 +13,7 @@ class ProjectFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $projectName = $this->faker->name;
         $startDate = $this->faker->dateTime;

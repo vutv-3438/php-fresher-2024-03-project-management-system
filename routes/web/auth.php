@@ -8,6 +8,8 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -53,4 +55,19 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+});
+
+/**
+ * TEST: Callback to get access token test
+ */
+Route::get('auth/callback', function (Request $request) {
+    $response = Http::asForm()->post("http://demo-nginx/oauth/token", [
+        'grant_type' => 'authorization_code',
+        'client_id' => '9bcf5786-a655-4dd0-b207-ed1da190dfc8',
+        'client_secret' => 'V8RcHGwUg5wMsTNY665lIGrNErfQp14MPmRgxBIq',
+        'code' => $request->code,
+        'redirect_uri' => 'http://localhost:8000/auth/callback',
+    ]);
+
+    return $response->json();
 });

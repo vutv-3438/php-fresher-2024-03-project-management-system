@@ -38,4 +38,11 @@ class IssueFactory extends Factory
             'project_id' => $projectId,
         ]);
     }
+
+    public function withParent(int $parentId)
+    {
+        return $this->state([
+            'parent_issue_id' => $parentId,
+        ]);
+    }
 }

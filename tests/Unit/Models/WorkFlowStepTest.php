@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Models;
 
-use App\Models\Issue;
 use App\Models\WorkFlow;
 use App\Models\WorkFlowStep;
 use Illuminate\Foundation\Testing\RefreshDatabase;

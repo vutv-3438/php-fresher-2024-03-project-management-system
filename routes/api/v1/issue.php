@@ -15,5 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('projects/{projectId}')->group(function () {
-    Route::resource('issues', IssueController::class);
+    Route::apiResource('issues', IssueController::class);
 });

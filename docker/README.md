@@ -23,8 +23,16 @@ IssueType::factory()->count(10)->create();
 ```
 Migrate:
 php artisan migrate --env=testing
+
 Run test:
 php artisan test --env=testing
+php artisan test tests/Unit/Http/Controllers/IssueControllerTest.php --env=testing
+
 Init coverage file:
 php artisan test --coverage-html {folder}
+```
+
+3/ Sail
+```
+sail -f docker/docker-compose.yml up -d
 ```

@@ -48,7 +48,7 @@ class StoreIssueRequest extends FormRequest
             ],
             'estimated_time' => ['nullable', 'numeric', 'min:0', 'max:8'],
             'progress' => ['nullable', 'integer', 'min:0', 'max:100'],
-            'projectId' => ['required', 'int', Rule::exists('projects', 'id')],
+            'projectId' => ['required', 'integer', Rule::exists('projects', 'id')],
         ];
     }
 }

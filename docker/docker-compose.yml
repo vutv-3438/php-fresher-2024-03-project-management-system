@@ -53,6 +53,19 @@ services:
         networks:
             - demo
 
+    selenium:
+        image: 'selenium/standalone-chrome'
+        container_name: demo-selenium
+        volumes:
+            - '/dev/shm:/dev/shm'
+        ports:
+            - "4444:4444"
+            - "7900:7900"
+        depends_on:
+            - nginx
+        networks:
+            - demo
+
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         container_name: demo-phpmyadmin
