@@ -24,6 +24,11 @@ class Issue extends Model
         return $value ? $this->asDateTime($value)->format('d-m-Y') : '---';
     }
 
+    public function getStartDateAttribute($value): string
+    {
+        return $value ? $this->asDateTime($value)->format('d-m-Y') : '---';
+    }
+
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);

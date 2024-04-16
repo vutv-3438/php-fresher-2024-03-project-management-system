@@ -6,10 +6,8 @@ use App\Common\Enums\Role as RoleEnum;
 use DragonCode\Support\Facades\Helpers\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -62,18 +60,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_locked' => 'boolean',
+        'id' => 'int',
+        'deleted_at' => 'datetime',
     ];
 
     protected $appends = ['full_name', 'is_deleted'];
 
-    public function assignedIssue(): HasOne
+    public function assignedIssues(): HasMany
     {
-        return $this->hasOne(Issue::class, 'assignee_id');
+        return $this->hasMany(Issue::class, 'assignee_id');
     }
 
-    public function reportedIssue(): BelongsTo
+    public function reportedIssues(): HasMany
     {
-        return $this->belongsTo(Issue::class, 'reporter_id', 'id');
+        return $this->hasMany(Issue::class, 'reporter_id');
     }
 
     public function userRoles(): HasMany

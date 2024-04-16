@@ -4,7 +4,6 @@ namespace App\Services\Repositories;
 
 use App\Common\Enums\Action;
 use App\Services\Repositories\Contracts\IBaseRepository;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -71,7 +70,7 @@ abstract class BaseRepository implements IBaseRepository
         return $this->model->findOrFail($id);
     }
 
-    public function getAllByProjectId(int $projectId, array $relations = []): Builder
+    public function getAllByProjectId(int $projectId, array $relations = [])
     {
         return $this->model
             ->with($relations)

@@ -23,7 +23,7 @@ class UserRole extends Model
 
     public function scopeCountManagerRoleInProject($query, int $projectId): int
     {
-        return $this->whereHas('role', function ($query) use ($projectId) {
+        return $query->whereHas('role', function ($query) use ($projectId) {
             $query->where('project_id', $projectId)
                 ->where('name', RoleEnum::MANAGER);
         })->count();
