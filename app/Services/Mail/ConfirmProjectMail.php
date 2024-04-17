@@ -2,15 +2,8 @@
 
 namespace App\Services\Mail;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
-
-class ConfirmProjectMailService extends Mailable
+class ConfirmProjectMail extends BaseMail
 {
-    use Queueable;
-    use SerializesModels;
-
     public $user;
     public $project;
     public $confirmationUrl;
@@ -22,7 +15,7 @@ class ConfirmProjectMailService extends Mailable
         $this->confirmationUrl = $confirmationUrl;
     }
 
-    public function build(): ConfirmProjectMailService
+    public function build(): ConfirmProjectMail
     {
         return $this->view('mails.invite-confirmation')
             ->subject('Confirm to join the project');

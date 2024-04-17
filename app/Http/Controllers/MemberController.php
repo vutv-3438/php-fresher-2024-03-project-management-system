@@ -8,9 +8,9 @@ use App\Common\Enums\Status;
 use App\Http\Requests\DeleteMemberRequest;
 use App\Http\Requests\InviteMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
-use App\Jobs\SendInvitationMail;
+use App\Jobs\Mails\SendMailJob;
 use App\Models\Member;
-use App\Services\Mail\ConfirmProjectMailService;
+use App\Services\Mail\ConfirmProjectMail;
 use App\Services\Repositories\Contracts\IMemberRepository;
 use App\Services\Repositories\Contracts\IProjectRepository;
 use App\Services\Repositories\Contracts\IRoleRepository;
@@ -99,7 +99,7 @@ class MemberController extends BaseController
                         'projectId' => $project->id,
                     ]
                 );
-                SendInvitationMail::dispatch(new ConfirmProjectMailService($usersByEmails[$email], $project, $url));
+                SendMailJob::dispatch(new ConfirmProjectMail($usersByEmails[$email], $project, $url));
             }
 
             return back()

@@ -19,7 +19,6 @@ IssueType::factory()->count(10)->create();
 ```
 
 2/ Unit testing
-
 ```
 Migrate:
 php artisan migrate --env=testing
@@ -30,4 +29,18 @@ php artisan test tests/Unit/Http/Controllers/IssueControllerTest.php --env=testi
 
 Init coverage file:
 php artisan test --coverage-html {folder}
+```
+
+3/ Cron jobs
+Locally:
+```
+php artisan schedule:work
+```
+Server:
+```
+php artisan schedule:run
+```
+For schedule queue must be run:
+```
+php artisan queue:work
 ```
