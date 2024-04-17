@@ -16,6 +16,7 @@ class Action
     public const FORCE_DELETE = 'forceDelete';
     public const LOCK = 'lock';
     public const UNLOCK = 'unlock';
+    public const REPORT = 'report';
     public const MEANINGS = [
         self::CREATE => 'Create new resource in the current project',
         self::UPDATE => 'Update the specific resource in the current project',

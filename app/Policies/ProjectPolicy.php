@@ -32,7 +32,7 @@ class ProjectPolicy
      */
     public function view(User $user, Project $project): bool
     {
-        $projectId = getRouteParam('id');
+        $projectId = getRouteParam('projectId');
 
         return $project->id === +$projectId &&
             $user->hasPermissionInProject(
@@ -62,7 +62,7 @@ class ProjectPolicy
      */
     public function update(User $user, Project $project): bool
     {
-        $projectId = getRouteParam('id');
+        $projectId = getRouteParam('projectId');
 
         return $project->id === +$projectId &&
             $user->hasPermissionInProject(
@@ -81,7 +81,7 @@ class ProjectPolicy
      */
     public function delete(User $user, Project $project): bool
     {
-        $projectId = getRouteParam('id');
+        $projectId = getRouteParam('projectId');
 
         return $project->id === +$projectId &&
             $user->hasPermissionInProject(

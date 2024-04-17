@@ -32,17 +32,31 @@ class IssueFactory extends Factory
         ];
     }
 
-    public function withProject(int $projectId)
+    public function withProject(int $projectId): IssueFactory
     {
         return $this->state([
             'project_id' => $projectId,
         ]);
     }
 
-    public function withParent(int $parentId)
+    public function withParent(int $parentId): IssueFactory
     {
         return $this->state([
             'parent_issue_id' => $parentId,
+        ]);
+    }
+
+    public function withAssignee(int $assigneeId): IssueFactory
+    {
+        return $this->state([
+            'assignee_id' => $assigneeId,
+        ]);
+    }
+
+    public function withIssueType(int $issueTypeId): IssueFactory
+    {
+        return $this->state([
+            'issue_type_id' => $issueTypeId,
         ]);
     }
 }

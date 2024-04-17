@@ -24,6 +24,7 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/pages/roleClaims/main.js', 'public/js/pages/roleClaims')
     .js('resources/js/pages/members/index.js', 'public/js/pages/members')
     .js('resources/js/pages/users/index.js', 'public/js/pages/users')
+    .js('resources/js/pages/report/index.js', 'public/js/pages/report')
     // Quill
     .js('node_modules/quill/dist/quill.js', 'public/js')
     .postCss('node_modules/quill/dist/quill.snow.css', 'public/css')

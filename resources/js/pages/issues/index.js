@@ -35,7 +35,6 @@ window.renderDataTable = function renderDataTable(data, editUrl, deleteUrl, csrf
                 },
                 {
                     data: 'progress',
-
                     name: 'progress',
                     render: function (data) {
                         return `

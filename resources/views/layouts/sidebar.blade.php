@@ -3,7 +3,7 @@
         <div class="h-screen px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="#"
+                    <a href="{{ route('dashboard') }}"
                        class="nav-link py-3 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group d-flex">
                         <svg
                             width="22"
@@ -27,12 +27,32 @@
                         </svg>
                     </a>
                 </li>
+                @can(Action::REPORT, \App\Models\Issue::class)
+                    <li class="nav-item">
+                        <a href="{{route('report', ['projectId' => $project->id])}}"
+                           class="nav-link py-3 text-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group d-flex">
+                            <svg
+                                width="22"
+                                height="22"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 448 512"
+                            >
+                                <path d="M160 80c0-26.5 21.5-48 48-48h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5
+                                48-48 48H208c-26.5 0-48-21.5-48-48V80zM0 272c0-26.5 21.5-48 48-48H80c26.5 0
+                                48 21.5 48 48V432c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V272zM368
+                                96h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H368c-26.5
+                                0-48-21.5-48-48V144c0-26.5 21.5-48 48-48z"/>
+                            </svg>
+                            <span class="ms-3">{{ __('Report') }}</span>
+                        </a>
+                    </li>
+                @endcan
                 @can(Action::VIEW_ANY, \App\Models\Issue::class)
                     <li class="nav-item">
                         <a href="{{route('issues.index', ['projectId' => $project->id])}}"
                            class="nav-link py-3 text-dark
-                       rounded-lg hover:bg-gray-100
-                       dark:hover:bg-gray-700 group d-flex"
+                           rounded-lg hover:bg-gray-100
+                           dark:hover:bg-gray-700 group d-flex"
                         >
                             <svg width="22" height="22" viewBox="0 0 24 24" role="presentation">
                                 <g fill="currentColor" fill-rule="evenodd">

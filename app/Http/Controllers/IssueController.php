@@ -237,4 +237,40 @@ class IssueController extends Controller
             return backWithActionStatus();
         }
     }
+
+    /**
+     * @throws AuthorizationException
+     */
+    public function countIssueWithIssueType(int $projectId): JsonResponse
+    {
+        $this->authorize(Action::REPORT, Issue::class);
+
+        try {
+            $data = $this->issueRepository->countIssueWithIssueType($projectId);
+
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return response()->json(['success' => false], 500);
+        }
+    }
+
+    /**
+     * @throws AuthorizationException
+     */
+    public function countIssueWithIssueTypeByMember(int $projectId): JsonResponse
+    {
+        $this->authorize(Action::REPORT, Issue::class);
+
+        try {
+            $data = $this->issueRepository->countIssueWithIssueTypeByMember($projectId);
+
+            return response()->json($data);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return response()->json(['success' => false], 500);
+        }
+    }
 }
