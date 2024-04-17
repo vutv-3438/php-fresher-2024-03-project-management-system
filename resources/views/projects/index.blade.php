@@ -5,7 +5,7 @@
         </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 w-full">
         <div class="container">
             <div class="overflow-hidden fs-5">
                 <div class="p-6 border-bottom border-gray-200">

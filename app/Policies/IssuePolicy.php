@@ -93,6 +93,19 @@ class IssuePolicy
     }
 
     /**
+     * Determine whether the user can view the report.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function report(User $user): bool
+    {
+        $projectId = getRouteParam('projectId');
+
+        return $user->hasPermissionInProject($projectId, Resource::ISSUE, Action::REPORT);
+    }
+
+    /**
      * Determine whether the user can restore the model.
      *
      * @param User $user

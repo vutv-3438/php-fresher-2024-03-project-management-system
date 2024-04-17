@@ -18,6 +18,7 @@ class Resource
     public const WORK_FLOW = 'work_flow';
     public const WORK_FLOW_STEP = 'work_flow_step';
     public const MEMBER = 'member';
+    public const REPORT = 'report';
 
     public static function toArray(): array
     {
